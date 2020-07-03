@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require('../db')
-const Posts = require('../models/Post')
+const Claims = require('./Claim')
 const Timeline = require('../models/Timeline')
 const Chat = require('../models/Chat')
 const Roster = require('../models/Roster')
@@ -27,5 +27,5 @@ const User = sequelize.define("user", {
   Roster.belongsTo(User)
   User.hasMany(Message, { onDelete: "cascade"});
   User.hasMany(MessageStatus, { onDelete: "cascade"});
-  User.hasMany(Posts);
+  User.hasMany(Claims);
 module.exports = User

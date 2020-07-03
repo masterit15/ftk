@@ -1,8 +1,8 @@
 const Sequelize = require("sequelize");
 const sequelize = require('../db')
-const User = require('../models/User')
-const Timeline = require('../models/Timeline')
-const Post = sequelize.define("post", {
+const User = require('./User')
+const Timeline = require('./Timeline')
+const Claim = sequelize.define("claim", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -11,7 +11,7 @@ const Post = sequelize.define("post", {
   },
   fio: {type: Sequelize.STRING, allowNull: false},
   text: {type: Sequelize.TEXT, allowNull: false},
-  selectstatus: {type: Sequelize.ENUM, values:['Все','Не обработан','В работе','Обработана'], defaultValue: 'Не обработан', allowNull: false},
+  status: {type: Sequelize.ENUM, values:['Все','Не обработан','В работе','Обработана'], defaultValue: 'Не обработан', allowNull: false},
   regnumber: {type: Sequelize.INTEGER, allowNull: false},
   address: {type: Sequelize.STRING, allowNull: false},
   credate: {
@@ -23,6 +23,5 @@ const Post = sequelize.define("post", {
   phonenumber: {type: Sequelize.STRING, allowNull: false},
   mobilenumber: {type: Sequelize.STRING, allowNull: false},
 })
-//Post.hasOne(Timeline, { onDelete: "cascade"});
-Post.hasMany(Timeline, { onDelete: "cascade"});
+Claim.hasMany(Timeline, { onDelete: "cascade"});
 module.exports = Post

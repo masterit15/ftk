@@ -6,7 +6,7 @@ const path = require('path')
 const auth = require('../middleware/auth.middleware')
 const convert = require('xml-js')
 const fs = require('fs')
-const Post = require('../models/Post');
+const Claim = require('../models/Claim');
 const Timeline = require('../models/Timeline');
 const User = require('../models/User');
 const router = Router();
@@ -17,7 +17,7 @@ const router = Router();
 router.get('/search', async (req, res) => {
     let { term } = req.query
     // term = term.toLowerCase()
-    Post.findAll({ where: { fio: { [Op.like]: '%'+ term +'%' } } })
+    Claim.findAll({ where: { fio: { [Op.like]: '%'+ term +'%' } } })
     .then(users => {
         return res.json({
             success: true,
@@ -35,11 +35,11 @@ router.get('/search', async (req, res) => {
 /*
     метод экспорта обращений
 */
-router.get('/export', auth, paginatedResults(Post), async (req, res) => {
+router.get('/export', auth, paginatedResults(Claim), async (req, res) => {
     //console.log(res.paginatedResults.results)
     const exportXML = await convert.json2xml(res.paginatedResults.results, { compact: true, ignoreComment: true, spaces: 4 });
         var date = new Date();
-        var datenow = date.getDate() + '-' + date.getFullYear() + '-' + date.getFullYear() + '_' + date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds()
+        var datenow = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear() + '_' + date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds()
         var files = 'export/' + datenow + '_export.xml'
         fs.writeFileSync(files, exportXML)
         setTimeout(() => {
@@ -55,10 +55,10 @@ router.get('/export', auth, paginatedResults(Post), async (req, res) => {
 /*
     метод отдачи обращений
 */
-router.get('/', auth, paginatedResults(Post), (req, res) => {
+router.get('/', auth, paginatedResults(Claim), (req, res) => {
     return res.json({
         success: true,
-        posts: res.paginatedResults
+        claims: res.paginatedResults
     });
 });
 
@@ -85,7 +85,7 @@ router.post('/add', auth, async (req, res, next) => {
         });
     } else {
         // объект нового обращения
-        Post.create({
+        Claim.create({
             fio,   
             text,
             selectstatus,
@@ -97,19 +97,19 @@ router.post('/add', auth, async (req, res, next) => {
             mobilenumber,
             userId,
         })
-        .then(async posts => {
-            let autor = await User.findOne({where:{id: posts.dataValues.userId}, raw: true })
+        .then(async claims => {
+            let autor = await User.findOne({where:{id: claims.dataValues.userId}, raw: true })
             let timelines = await Timeline.create({
                 event: 'created',
-                text: `Обращение № ${posts.dataValues.regnumber} было создано`,
-                time: posts.dataValues.credate,
-                postId: posts.dataValues.id,
-                userId: posts.dataValues.userId,
+                text: `Обращение № ${claims.dataValues.regnumber} было создано`,
+                time: claims.dataValues.credate,
+                claimId: claims.dataValues.id,
+                userId: claims.dataValues.userId,
                 autor: autor.login
               })
             return res.json({
                 success: true,
-                posts,
+                claims,
                 timelines,
                 message: 'Обращение успешно добавлено в базу данных.'
             });
@@ -128,11 +128,11 @@ router.post('/add', auth, async (req, res, next) => {
 */
 router.get('/:id', async (req, res, next) => {
     let id = req.params.id;
-    await Post.findOne({where:{ id }})
-    .then((post) => {
+    await Claim.findOne({where:{ id }})
+    .then((claim) => {
         return res.json({
             success: true,
-            post: post
+            claim
         });
     })
     .catch((err) => {
@@ -147,7 +147,7 @@ router.get('/:id', async (req, res, next) => {
     метод добавления в таймлайн обращения по ID
 */
 router.post('/tml/add', auth, async (req, res, next) => {
-    const {event,text,time,file,postId,userId} = req.body
+    const {event,text,time,file,ClaimId,userId} = req.body
     let message
     if(event == 'comment'){
         message = 'Комментарий добавлен'
@@ -160,7 +160,7 @@ router.post('/tml/add', auth, async (req, res, next) => {
         text,
         time,
         file,
-        postId,
+        ClaimId,
         userId,
         autor: autor.login
       }).then(timelines =>{
@@ -182,7 +182,7 @@ router.post('/tml/add', auth, async (req, res, next) => {
 */
 router.get('/tml/:id', auth, async (req, res, next) => {
     let id = req.params.id
-    await Timeline.findAll({where: { postId: id }, raw: true })
+    await Timeline.findAll({where: { ClaimId: id }, raw: true })
     .then(timelines=>{
         return res.json({
             success: true,
@@ -234,7 +234,7 @@ router.put('/:id', auth, async (req, res, next) => {
     let mobilenumber    = req.body.mobilenumber
     let userId          = Number(req.user.userId)
     // обновление обращения
-    Post.update({
+    Claim.update({
         fio,   
         text,
         selectstatus,
@@ -247,11 +247,11 @@ router.put('/:id', auth, async (req, res, next) => {
         userId,
     },{where: {id}
     })
-    .then(posts => {
+    .then(claims => {
         return res.json({
             success: true,
             message: 'Обращение успешно обновлено.',
-            posts,
+            claims,
         });
     }).catch(err => {
         console.log(err)
@@ -267,13 +267,13 @@ router.put('/:id', auth, async (req, res, next) => {
 */
 router.delete('/:id', auth, (req, res, next) => {
     let id = req.params.id;
-    Post.destroy({
+    Claim.destroy({
         where: {id}
-      }).then(posts => {
+      }).then(claims => {
         return res.json({
             success: true,
             message: 'Обращение успешно удалено',
-            posts
+            claims
         });
       })
       .catch((err) => {
