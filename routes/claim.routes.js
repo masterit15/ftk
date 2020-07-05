@@ -65,37 +65,30 @@ router.get('/', auth, paginatedResults(Claim), (req, res) => {
 /* 
     метод добавления обращения
 */
-router.post('/add', auth, async (req, res, next) => {
-    let fio             = req.body.fio
-    let text            = req.body.text
-    let selectstatus    = req.body.selectstatus
-    let address         = req.body.address
-    let credate         = req.body.credate
-    let condate         = req.body.condate
-    let regnumber       = Number(req.body.regnumber)
-    let phonenumber     = req.body.phonenumber
-    let mobilenumber    = req.body.mobilenumber
-    let userId          = Number(req.user.userId)
-
-    // валидация полученныйх данных
-    if (fio === undefined || text === undefined || address === undefined) {
-        return res.json({
-            success: false,
-            message: 'Пожалуйста, заполните все поля'
-        });
-    } else {
-        // объект нового обращения
+router.post('/', auth, async (req, res, next) => {
+    const {
+        status,
+        timeline,
+        creatorID,
+        filesPath,
+        description,
+        answerFiles,
+        creationDate,
+        departmentID,
+        responsibleID,
+        answerDescription,
+    } = req.body
         Claim.create({
-            fio,   
-            text,
-            selectstatus,
-            address,
-            credate,
-            condate,
-            regnumber,
-            phonenumber,
-            mobilenumber,
-            userId,
+            status,
+            timeline,
+            creatorID,
+            filesPath,
+            description,
+            answerFiles,
+            creationDate,
+            departmentID,
+            responsibleID,
+            answerDescription, 
         })
         .then(async claims => {
             let autor = await User.findOne({where:{id: claims.dataValues.userId}, raw: true })
@@ -120,8 +113,6 @@ router.post('/add', auth, async (req, res, next) => {
                 err: err
             });
         });
-        
-    }
 });
 /*
     метод получения обращения по ID
@@ -146,7 +137,7 @@ router.get('/:id', async (req, res, next) => {
 /*
     метод добавления в таймлайн обращения по ID
 */
-router.post('/tml/add', auth, async (req, res, next) => {
+router.post('/tml/', auth, async (req, res, next) => {
     const {event,text,time,file,ClaimId,userId} = req.body
     let message
     if(event == 'comment'){
@@ -223,28 +214,30 @@ router.delete('/tml/:id', auth, async (req, res, next) => {
 */
 router.put('/:id', auth, async (req, res, next) => {
     let id = req.params.id
-    let fio             = req.body.fio
-    let text            = req.body.text
-    let selectstatus    = req.body.selectstatus
-    let address         = req.body.address
-    let credate         = req.body.credate
-    let condate         = req.body.condate
-    let regnumber       = Number(req.body.regnumber)
-    let phonenumber     = req.body.phonenumber
-    let mobilenumber    = req.body.mobilenumber
-    let userId          = Number(req.user.userId)
+    const {
+        status,
+        timeline,
+        creatorID,
+        filesPath,
+        description,
+        answerFiles,
+        creationDate,
+        departmentID,
+        responsibleID,
+        answerDescription,
+    } = req.body
     // обновление обращения
     Claim.update({
-        fio,   
-        text,
-        selectstatus,
-        address,
-        credate,
-        condate,
-        regnumber,
-        phonenumber,
-        mobilenumber,
-        userId,
+        status,
+        timeline,
+        creatorID,
+        filesPath,
+        description,
+        answerFiles,
+        creationDate,
+        departmentID,
+        responsibleID,
+        answerDescription,
     },{where: {id}
     })
     .then(claims => {
@@ -265,8 +258,18 @@ router.put('/:id', auth, async (req, res, next) => {
 /*
     метод удаления обращения по ID
 */
-router.delete('/:id', auth, (req, res, next) => {
+router.delete('/:id', auth, async (req, res, next) => {
     let id = req.params.id;
+    await Claim.findOne({where:{ id }})
+    .then((claim) => {
+        claim.filesPath.array.forEach(filePath => {
+            fs.unlinkSync(filePath);
+        }); 
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+    
     Claim.destroy({
         where: {id}
       }).then(claims => {

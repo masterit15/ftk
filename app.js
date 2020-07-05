@@ -11,22 +11,23 @@ const { app, server } = require('./chat')
 app.use(express.json({ extended: true }))
 app.use(cors())
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Origin", "*"); // тут выставим домен с которым будет работать api
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
     next();
 });
 
 app.use(express.static(__dirname));
-app.use('/auth', require('./routes/auth.routes'))
-app.use('/posts', require('./routes/post.routes'))
-app.use('/chat', require('./routes/chat.routes'))
-app.use('/upload', require('./routes/upload.routes'))
+app.use('/api/auth', require('./routes/auth.routes'))
+app.use('/api/claims', require('./routes/claim.routes'))
+app.use('/api/chat', require('./routes/chat.routes'))
+app.use('/api/upload', require('./routes/upload.routes'))
+app.use('/api/departament', require('./routes/departament.routes'))
 
 if (process.env.NODE_ENV === 'production') {
-    app.use('/', express.static(path.join(__dirname, 'client', 'dist')))
+    app.use('/', express.static(path.join(__dirname, 'web', 'dist')))
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
+        res.sendFile(path.resolve(__dirname, 'web', 'dist', 'index.html'))
     })
 }
 

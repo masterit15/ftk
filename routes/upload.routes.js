@@ -1,21 +1,22 @@
 const {Router} = require('express')
 const User = require('../models/User')
-const Post = require('../models/Post')
+const Claim = require('../models/Claim')
 const Timeline = require('../models/Timeline')
 const multer  = require("multer")
 const router = Router()
  
 const storageConfig = multer.diskStorage({
   destination: (req, file, cb) =>{
-      cb(null, "./uploads");
+      cb(null, `./uploads`);
   },
   filename: (req, file, cb) =>{
       cb(null, Date.now()+ "-" +file.originalname);
   }
 });
+const upload = multer({ storage: storageConfig })
 
-router.post("/", multer({storage:storageConfig}).single("file"), (req, res, next) => {
-    let filedata = req.file; 
+router.post("/", upload.array("files", 5), (req, res, next) => {
+    let filedata = req.files; 
     if(!filedata){
         res.status(404).json({
           success: false,

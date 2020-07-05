@@ -24,4 +24,4 @@ const Claim = sequelize.define("claim", {
   mobilenumber: {type: Sequelize.STRING, allowNull: false},
 })
 Claim.hasMany(Timeline, { onDelete: "cascade"});
-module.exports = Post
+module.exports = Claim
