@@ -5,7 +5,7 @@
         <form class="form sign-in" action="/" @submit.prevent="authLogin">
           <h2>Авторизация</h2>
           <div class="input-field col s12">
-            <input v-model="login" id="login" type="text" class="validate" />
+            <input v-model="authData.login" id="login" type="text" class="validate" />
             <label for="login">
               <i class="fa fa-user"></i> Логин
             </label>
@@ -13,7 +13,7 @@
           <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors, valid }">
             <div class="input-field col s12">
               <input
-                v-model="password"
+                v-model="authData.password"
                 id="password"
                 type="password"
                 :class="valid ? 'valid' : 'invalid'"
@@ -57,7 +57,7 @@
             <div class="input-field col s12">
               <input 
               id="fio" 
-              v-model="username" 
+              v-model="registerData.username" 
               type="text" 
               :class="valid ? errors : 'invalid'"
               />
@@ -65,11 +65,23 @@
               <span v-for="error in errors" :key="error">{{ error }}</span>
             </div>
             </ValidationProvider>
+            <ValidationProvider name="username" rules="required" v-slot="{ errors, valid }">
+            <div class="input-field col s12">
+              <input 
+              id="reglogin" 
+              v-model="registerData.login" 
+              type="text" 
+              :class="valid ? errors : 'invalid'"
+              />
+              <label for="reglogin">Логин</label>
+              <span v-for="error in errors" :key="error">{{ error }}</span>
+            </div>
+            </ValidationProvider>
             <ValidationProvider name="Email" rules="required|email" v-slot="{ errors, valid }">
               <div class="input-field col s12">
                 <input
                   id="email"
-                  v-model="email"
+                  v-model="registerData.email"
                   type="email"
                   :class="valid ? errors : 'invalid'"
                   :success="valid"
@@ -81,7 +93,7 @@
             <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors, valid }">
               <div class="input-field col s12">
                 <input
-                  v-model="regpassword"
+                  v-model="registerData.password"
                   id="regpassword"
                   type="password"
                   :class="valid ? errors : 'invalid'"
@@ -93,7 +105,7 @@
             <ValidationProvider rules="required|password:@confirm" v-slot="{ errors, valid }">
               <div class="input-field col s12">
                 <input
-                  v-model="regpasswordConfirm"
+                  v-model="registerData.passwordConfirm"
                   id="passwordconfirm"
                   type="password"
                   :class="valid ? 'valid' : 'invalid'"
@@ -104,7 +116,7 @@
             </ValidationProvider>
             <ValidationProvider rules="required" v-slot="{ errors, valid }">
               <div class="input-field col s12">
-                <input @input="departementComplete" type="text" id="autocomplete-input" class="autocomplete">
+                <input v-model="registerData.departament" @input="departementComplete" type="text" id="autocomplete-input" class="autocomplete">
                 <label for="autocomplete-input">Упраление или отдел</label>
                 <span v-for="error in errors" :key="error">{{ error }}</span>
               </div>
@@ -123,17 +135,23 @@ export default {
   name: "auth",
   data() {
     return {
-      login: '',
-      email: '',
-      username: '',
-      password: '',
-      permission: '',
-      regpassword: '',
-      regpasswordConfirm: ''
+      authData: {
+        login: '',
+        password: '',
+      },
+      registerData: {
+        email: '',
+        username: '',
+        login: '',
+        permission: '',
+        password: '',
+        departament: '',
+        passwordConfirm: ''
+      },
     };
   },
   methods: {
-    ...mapActions(['authorization']),
+    ...mapActions(['authorization', 'register']),
     authClick() {
       let cont = document.querySelector(".cont");
       cont.classList.toggle("s-signup");
@@ -147,11 +165,18 @@ export default {
       console.log(res);
     },
     authRegister() {
+      this.register()
       console.log(this.login, this.password);
     },
     departementComplete(){
       let elems = document.querySelectorAll('.autocomplete');
-      let instances = M.Autocomplete.init(elems, options);
+      let instances = M.Autocomplete.init(elems, {
+        data: {
+          "Управление образования": null,
+          "Финансовое управление": null,
+          "Google": 'https://placehold.it/250x250'
+        }
+      });
     }
   }
 };
