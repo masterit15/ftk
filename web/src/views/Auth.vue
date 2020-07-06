@@ -2,7 +2,7 @@
   <div id="auth">
     <div class="cont">
       <ValidationObserver>
-        <form class="form sign-in" action="/" @submit.prevent="authLogin">
+        <form class="form sign-in" action="/" @submit.prevent="authorization(authData)">
           <h2>Авторизация</h2>
           <div class="input-field col s12">
             <input v-model="authData.login" id="login" type="text" class="validate" />
@@ -16,7 +16,7 @@
                 v-model="authData.password"
                 id="password"
                 type="password"
-                :class="valid ? 'valid' : 'invalid'"
+                
               />
               <label for="password">
                 <i class="fa fa-unlock-alt"></i> Пароль
@@ -59,7 +59,7 @@
               id="fio" 
               v-model="registerData.username" 
               type="text" 
-              :class="valid ? errors : 'invalid'"
+              
               />
               <label for="fio">ФИО</label>
               <span v-for="error in errors" :key="error">{{ error }}</span>
@@ -71,7 +71,7 @@
               id="reglogin" 
               v-model="registerData.login" 
               type="text" 
-              :class="valid ? errors : 'invalid'"
+              
               />
               <label for="reglogin">Логин</label>
               <span v-for="error in errors" :key="error">{{ error }}</span>
@@ -83,7 +83,7 @@
                   id="email"
                   v-model="registerData.email"
                   type="email"
-                  :class="valid ? errors : 'invalid'"
+                  
                   :success="valid"
                 />
                 <label for="email">Е-почта</label>
@@ -96,7 +96,7 @@
                   v-model="registerData.password"
                   id="regpassword"
                   type="password"
-                  :class="valid ? errors : 'invalid'"
+                  
                 />
                 <label for="regpassword">Пароль</label>
                 <span v-for="error in errors" :key="error">{{ error }}</span>
@@ -108,7 +108,7 @@
                   v-model="registerData.passwordConfirm"
                   id="passwordconfirm"
                   type="password"
-                  :class="valid ? 'valid' : 'invalid'"
+                  
                 />
                 <label for="passwordconfirm">Повторите Пароль</label>
                 <span v-for="error in errors" :key="error">{{ error }}</span>
@@ -156,17 +156,9 @@ export default {
       let cont = document.querySelector(".cont");
       cont.classList.toggle("s-signup");
     },
-    async authLogin() {
-      let data = {
-        login: this.login,
-        password: this.password
-      }
-      let res = await this.authorization(data)
-      console.log(res);
-    },
     authRegister() {
-      this.register()
-      console.log(this.login, this.password);
+      this.register(this.registerData)
+      console.log(this.registerData);
     },
     departementComplete(){
       let elems = document.querySelectorAll('.autocomplete');
@@ -219,6 +211,7 @@ input, button
   width: 500px
   height: 100%
   padding: 50px 30px
+  overflow-y: auto
   -webkit-transition: -webkit-transform 1.2s ease-in-out
   transition: -webkit-transform 1.2s ease-in-out
   transition: transform 1.2s ease-in-out

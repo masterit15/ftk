@@ -6,10 +6,10 @@ const sequelize = new Sequelize("ftk", "root", "root", {
     timestamps: false
   }
 });
-sequelize.sync().then(result=>{
-  console.log(result);
-})
-.catch(err=> {
-  console.log(err)
-});
+// sequelize.sync().then(result=>{
+//   console.log(result);
+// })
+// .catch(err=> {
+//   console.log(err)
+// });
 module.exports = sequelize;

@@ -4,6 +4,7 @@ const config = require('config')
 const jwt = require('jsonwebtoken')
 const {check, validationResult} = require('express-validator')
 const User = require('../models/User')
+const Departament = require('../models/Departament')
 const auth = require('../middleware/auth.middleware')
 const RefToken = require('../models/refreshToken')
 const router = Router()
@@ -14,7 +15,7 @@ const router = Router()
 router.post(
     '/register', 
     [
-        // check('email', 'Некорректный email').isEmail(),
+        check('email', 'Некорректный email').isEmail(),
         check('password', 'Минимальная длина пароля 8 символов').isLength({options: {min: 8}})
     ],
     async (req, res, next) => {
@@ -26,20 +27,33 @@ router.post(
                 message: 'Некорректные данные при регистрации'
             })
         }
-        const { login, email, username, avatar, permission, password } = req.body 
+        const { login, email, username, password, permission, departament } = req.body 
         const hashedPassword = await bcrypt.hash(password, 12)
         const candidate = await User.findOne({where: {login}})
-
+        const dep = await Departament.findOne({ where: { name: departament } })
+        let depID = null
+        
+        if (dep) {
+            depID = dep.departament.dataValues.id
+        }else{
+            Departament.create({
+                name: departament
+            }).then(departament => {
+                console.log(departament)
+                depID = departament.id
+            }).catch((err) => {});
+        }
         if(candidate){
             return res.json({message: 'Такой пользователь уже существует'})
-        }
+        } 
         User.create({
             login, 
             email,
             username,
-            avatar, 
-            permission, 
-            password: hashedPassword
+            avatar: '', 
+            permission: permission ? permission : 'Сотрудник', 
+            password: hashedPassword,
+            departament: depID
         }).then(users=>{
             return res.status(201).json({ 
                 success: true,
@@ -54,7 +68,10 @@ router.post(
             })
         });
     } catch (e) {
-        res.status(500).json({message: 'Что-то пошло не так, попробуйте еще раз'})
+        res.status(500).json({ 
+            err:e,
+            message: 'Что-то пошло не так, попробуйте еще раз'
+        })
     }
 })
 /*
