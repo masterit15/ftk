@@ -7,8 +7,9 @@ import router from './router'
 import store from './store'
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 import './vee-validate'
+import messages from './plugins/messages'
 Vue.config.productionTip = false
-
+Vue.use(messages)
 Vue.prototype.$http = axios
 if(localStorage.tokenData){
 const tokenData = JSON.parse(localStorage.tokenData)

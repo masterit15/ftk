@@ -2,7 +2,7 @@
   <div id="auth">
     <div class="cont">
       <ValidationObserver>
-        <form class="form sign-in" action="/" @submit.prevent="authorization(authData)">
+        <form class="form sign-in" action="/" @submit.prevent="authLogin">
           <h2>Авторизация</h2>
           <div class="input-field col s12">
             <input v-model="authData.login" id="login" type="text" class="validate" />
@@ -116,7 +116,7 @@
             </ValidationProvider>
             <ValidationProvider rules="required" v-slot="{ errors, valid }">
               <div class="input-field col s12">
-                <input v-model="registerData.departament" @input="departementComplete" type="text" id="autocomplete-input" class="autocomplete">
+                <input v-model="registerData.departament" @input="departementComplete" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off">
                 <label for="autocomplete-input">Упраление или отдел</label>
                 <span v-for="error in errors" :key="error">{{ error }}</span>
               </div>
@@ -156,9 +156,19 @@ export default {
       let cont = document.querySelector(".cont");
       cont.classList.toggle("s-signup");
     },
-    authRegister() {
-      this.register(this.registerData)
-      console.log(this.registerData);
+    async authLogin(){
+      let res = await this.authorization(this.authData)
+      if(res){
+        this.$router.push('/') 
+      }
+    },
+    async authRegister() {
+      let res = await this.register(this.registerData)
+      if(res.success){
+        this.$message(res.message)
+      }else{
+        this.$error(res.message)
+      }
     },
     departementComplete(){
       let elems = document.querySelectorAll('.autocomplete');

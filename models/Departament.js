@@ -12,5 +12,5 @@ const Departament = sequelize.define("departament", {
   name: {type: Sequelize.STRING, allowNull: false},
 })
 Departament.hasMany(Claim, { onDelete: "cascade"});
-User.hasMany(User);
+Departament.hasMany(User);
 module.exports = Departament

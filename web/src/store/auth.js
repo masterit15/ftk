@@ -2,7 +2,7 @@ import axios from "axios"
 
 export default({
   state: { 
-    user: localStorage.getItem('user') || null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
   },
   mutations: {
     set_user(state, user){
@@ -12,15 +12,17 @@ export default({
   actions: {
     async authorization({commit}, data){
       let res = await axios.post('/api/auth/login', data)
-      localStorage.setItem('user', res.data.user)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.user.access_token}`
-      commit('set_user', res.data.user)
-      return res
+      console.log(res)
+      localStorage.setItem('user', JSON.stringify(res.data))
+      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access_token}`
+      commit('set_user', res.data)
+      return res.data.success
     },
     async register({dispatch}, data){
       let res = await axios.post('/api/auth/register', data)
-      dispatch('login', res.data)
-      return res
+      console.log(res)
+      dispatch('authorization', {login: res.data.users.login, password: res.data.users.password})
+      return res.data
     },
     async logout({commit}, data){
       let res = await axios.delete('/api/auth/login', data)

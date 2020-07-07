@@ -32,15 +32,14 @@ router.post(
         const candidate = await User.findOne({where: {login}})
         const dep = await Departament.findOne({ where: { name: departament } })
         let depID = null
-        
+
         if (dep) {
-            depID = dep.departament.dataValues.id
+            depID = dep.dataValues.id
         }else{
-            Departament.create({
+            await Departament.create({
                 name: departament
             }).then(departament => {
-                console.log(departament)
-                depID = departament.id
+                depID = departament.dataValues.id
             }).catch((err) => {});
         }
         if(candidate){
@@ -53,7 +52,7 @@ router.post(
             avatar: '', 
             permission: permission ? permission : 'Сотрудник', 
             password: hashedPassword,
-            departament: depID
+            departamentId: depID
         }).then(users=>{
             return res.status(201).json({ 
                 success: true,
@@ -104,7 +103,6 @@ router.post(
         if(!user){
             return res.status(400)
         }
-
         const isMatch = await bcrypt.compare(password, user.password)
         
         if(!isMatch){
@@ -121,7 +119,7 @@ router.post(
             login, 
             userId: user.id, 
             username: user.username,
-            avatar: user.avatar
+            //avatar: user.avatar
          })
 
     } catch (e) {
