@@ -10,7 +10,7 @@
               <i class="fa fa-user"></i> Логин
             </label>
           </div>
-          <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors, valid }">
+          <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors}">
             <div class="input-field col s12">
               <input
                 v-model="authData.password"
@@ -53,7 +53,7 @@
         <ValidationObserver>
           <form class="form sign-up" @submit.prevent="authRegister">
             <h2>Регистрация</h2>
-            <ValidationProvider name="username" rules="required" v-slot="{ errors, valid }">
+            <ValidationProvider name="username" rules="required" v-slot="{ errors}">
             <div class="input-field col s12">
               <input 
               id="fio" 
@@ -65,7 +65,7 @@
               <span v-for="error in errors" :key="error">{{ error }}</span>
             </div>
             </ValidationProvider>
-            <ValidationProvider name="username" rules="required" v-slot="{ errors, valid }">
+            <ValidationProvider name="username" rules="required" v-slot="{ errors}">
             <div class="input-field col s12">
               <input 
               id="reglogin" 
@@ -77,7 +77,7 @@
               <span v-for="error in errors" :key="error">{{ error }}</span>
             </div>
             </ValidationProvider>
-            <ValidationProvider name="Email" rules="required|email" v-slot="{ errors, valid }">
+            <ValidationProvider name="Email" rules="required|email" v-slot="{ errors}">
               <div class="input-field col s12">
                 <input
                   id="email"
@@ -90,7 +90,7 @@
                 <span v-for="error in errors" :key="error">{{ error }}</span>
               </div>
             </ValidationProvider>
-            <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors, valid }">
+            <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors}">
               <div class="input-field col s12">
                 <input
                   v-model="registerData.password"
@@ -102,7 +102,7 @@
                 <span v-for="error in errors" :key="error">{{ error }}</span>
               </div>
             </ValidationProvider>
-            <ValidationProvider rules="required|password:@confirm" v-slot="{ errors, valid }">
+            <ValidationProvider rules="required|password:@confirm" v-slot="{ errors}">
               <div class="input-field col s12">
                 <input
                   v-model="registerData.passwordConfirm"
@@ -114,7 +114,7 @@
                 <span v-for="error in errors" :key="error">{{ error }}</span>
               </div>
             </ValidationProvider>
-            <ValidationProvider rules="required" v-slot="{ errors, valid }">
+            <ValidationProvider rules="required" v-slot="{ errors}">
               <div class="input-field col s12">
                 <input v-model="registerData.departament" @input="departementComplete" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off">
                 <label for="autocomplete-input">Упраление или отдел</label>
