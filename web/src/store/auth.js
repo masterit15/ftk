@@ -12,7 +12,6 @@ export default({
   actions: {
     async authorization({commit}, data){
       let res = await axios.post('/api/auth/login', data)
-      console.log(res)
       localStorage.setItem('user', JSON.stringify(res.data))
       axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access_token}`
       commit('set_user', res.data)
@@ -20,8 +19,6 @@ export default({
     },
     async register({dispatch}, data){
       let res = await axios.post('/api/auth/register', data)
-      console.log(res)
-      dispatch('authorization', {login: res.data.users.login, password: res.data.users.password})
       return res.data
     },
     async logout({commit}, data){
