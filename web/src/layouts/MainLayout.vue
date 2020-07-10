@@ -14,11 +14,20 @@
 import AppHeader from "../components/Header";
 import AppSidebar from "../components/Sidebar";
 import AppFooter from "../components/Footer";
+import {mapActions} from 'vuex'
 export default {
   components: {
     AppHeader,
     AppSidebar,
     AppFooter
-  }
+  },
+  created() {
+    setInterval(() => {
+      this.refreshToken()
+    }, 840000);
+  },
+  methods: {
+    ...mapActions(['refreshToken'])
+  },
 };
 </script>

@@ -9,6 +9,7 @@
 <script>
 import EmptyLayout from './layouts/Emptylayout.vue'
 import MainLayout from './layouts/Mainlayout.vue'
+import {mapActions} from 'vuex'
 export default {
   name: 'App',
   computed: {
