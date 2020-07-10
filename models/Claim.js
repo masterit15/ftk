@@ -9,19 +9,20 @@ const Claim = sequelize.define("claim", {
     primaryKey: true,
     allowNull: false
   },
-  fio: {type: Sequelize.STRING, allowNull: false},
-  text: {type: Sequelize.TEXT, allowNull: false},
-  status: {type: Sequelize.ENUM, values:['Все','Не обработан','В работе','Обработана'], defaultValue: 'Не обработан', allowNull: false},
-  regnumber: {type: Sequelize.INTEGER, allowNull: false},
+  creatorId: {type: Sequelize.STRING, allowNull: false},
+  filesPath: {type: Sequelize.JSON},
+  answerFiles: { type: Sequelize.JSON },
+  description: {type: Sequelize.TEXT, allowNull: false},
+  status: {type: Sequelize.ENUM, values:['true','false'], defaultValue: 'false', allowNull: false},
   address: {type: Sequelize.STRING, allowNull: false},
-  credate: {
+  creationDate: {
     type: Sequelize.DATE, 
     allowNull: false,
     defaultValue: Sequelize.NOW
   },
-  condate: {type: Sequelize.DATE, allowNull: true},
-  phonenumber: {type: Sequelize.STRING, allowNull: false},
-  mobilenumber: {type: Sequelize.STRING, allowNull: false},
+  departmentId: {type: Sequelize.INTEGER, allowNull: false},
+  responsibleId: {type: Sequelize.STRING, allowNull: false},
+  answerDescription: { type: Sequelize.TEXT, allowNull: false }
 })
 Claim.hasMany(Timeline, { onDelete: "cascade"});
 module.exports = Claim

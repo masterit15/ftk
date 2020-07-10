@@ -5,20 +5,24 @@ import App from './App'
 import axios from 'axios'
 import router from './router'
 import store from './store'
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 import './vee-validate'
 import messages from './plugins/messages'
 Vue.config.productionTip = false
 Vue.use(messages)
 Vue.prototype.$http = axios
-if(localStorage.tokenData){
-const tokenData = JSON.parse(localStorage.tokenData)
-  Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${tokenData.access_token}`
+if(localStorage.user){
+const tokenData = JSON.parse(localStorage.user)
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${tokenData.accessToken}`
 }
+
+Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
 
-import 'materialize-css'
+
 import './sass/main.sass'
 /* eslint-disable no-new */
 new Vue({

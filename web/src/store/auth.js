@@ -22,12 +22,12 @@ export default({
       return res.data
     },
     async logout({commit}, data){
-      let res = await axios.delete('/api/auth/login', data)
+      let res = await axios.delete('/api/auth/logout', {params:{token: data}})
       if(res.data.success){
         localStorage.removeItem('user')
         delete axios.defaults.headers.common['Authorization']
       }
-      return res
+      return res.data.success
     },
   },
   getters: {

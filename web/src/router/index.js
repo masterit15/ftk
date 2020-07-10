@@ -24,7 +24,7 @@ const router =  new Router({
       }
     },
     {
-      path: '/applications',
+      path: '/claims',
       name: 'Обращения',
       component: () => import('../views/Claims.vue'),
       meta: {

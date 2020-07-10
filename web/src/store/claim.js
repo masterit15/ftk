@@ -26,8 +26,11 @@ export default({
       return res
     },
     async getClaims({commit}, data){
-      let res = await axios.get('/api/claims/', data)
-      commit('set_claims', res.data)
+      console.log(data)
+      let res = await axios.get('/api/claims/', {
+        params: data
+      })
+      commit('set_claims', res.data.result)
       return res
     }
   },

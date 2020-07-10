@@ -310,6 +310,7 @@ rmDir = function(dirPath, removeSelf) {
 /*
     функция предварительной обработки, сортировки и фильтрации, перед отдачей на клиентскую часть
 */
+
 function getTotal(model, searchparam, search, status='Все', sortIsmain='all', userId, dateintervalfrom, dateintervalto, dateinterval){
     var res
     if (search !== '' && search !== undefined){
@@ -332,7 +333,7 @@ function getTotal(model, searchparam, search, status='Все', sortIsmain='all',
     }else if(sortIsmain == 'main'){
         res = model.findAll({where:{userId}, raw: true })
     }else if(status !== 'Все'){
-        res = model.findAll({where:{selectstatus: status}, raw: true })
+        res = model.findAll({where:{status: status}, raw: true })
     }else{
         res = model.findAll({raw:true})
     }
@@ -428,7 +429,7 @@ function paginatedResults(model) {
                 } 
             }else if(status !== 'Все'){
                 results.results = await model.findAll({
-                    where:{selectstatus: status},
+                    where:{status: status},
                         order:[
                             ["id" , 'DESC']
                         ],

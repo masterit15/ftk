@@ -2,38 +2,30 @@
   <div id="auth">
     <div class="cont">
       <ValidationObserver>
-        <form class="form sign-in" action="/" @submit.prevent="authLogin">
+        <b-form class="form sign-in" action="/" @submit.prevent="authLogin">
           <h2>Авторизация</h2>
-          <div class="input-field col s12">
-            <input v-model="authData.login" id="login" type="text" class="validate" />
-            <label for="login">
-              <i class="fa fa-user"></i> Логин
-            </label>
-          </div>
+            <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="person-fill"></b-icon>
+              </b-input-group-prepend > 
+            <b-input v-model="authData.login" id="login" type="text" class="validate"></b-input>
+            </b-input-group>
           <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors}">
-            <div class="input-field col s12">
-              <input
+              <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="lock-fill"></b-icon>
+              </b-input-group-prepend > 
+              <b-input
                 v-model="authData.password"
                 id="password"
-                type="password"
-                
-              />
-              <label for="password">
-                <i class="fa fa-unlock-alt"></i> Пароль
-              </label>
+                type="password"></b-input>
+              </b-input-group>
               <span v-for="error in errors" :key="error">{{ error }}</span>
-            </div>
           </ValidationProvider>
-          <div class="switch">
-            <label>
-              <input type="checkbox" />
-              <span class="lever"></span>
-              Запомнить меня?
-            </label>
-          </div>
-          <button class="submit" type="submit">Авторизация</button>
+              <b-form-checkbox type="checkbox">Запомнить меня?</b-form-checkbox>
+            <button class="submit" type="submit">Авторизация</button>
           <p class="forgot-pass">Забыли пароль ?</p>
-        </form>
+        </b-form>
       </ValidationObserver>
       <div class="sub-cont">
         <div class="img">
@@ -51,78 +43,87 @@
           </div>
         </div>
         <ValidationObserver>
-          <form class="form sign-up" @submit.prevent="authRegister">
+          <b-form class="form sign-up" @submit.prevent="authRegister">
             <h2>Регистрация</h2>
             <ValidationProvider name="username" rules="required" v-slot="{ errors}">
-            <div class="input-field col s12">
-              <input 
+            <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="person-lines-fill"></b-icon>
+              </b-input-group-prepend > 
+              <b-input
               id="fio" 
+              placeholder="ФИО"
               v-model="registerData.username" 
-              type="text" 
-              
-              />
-              <label for="fio">ФИО</label>
-              <span v-for="error in errors" :key="error">{{ error }}</span>
-            </div>
+              type="text"></b-input>
+            </b-input-group>
+                            <span v-for="error in errors" :key="error">{{ error }}</span>
             </ValidationProvider>
             <ValidationProvider name="username" rules="required" v-slot="{ errors}">
-            <div class="input-field col s12">
-              <input 
+              <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="person-fill"></b-icon>
+              </b-input-group-prepend > 
+              <b-input 
               id="reglogin" 
               v-model="registerData.login" 
-              type="text" 
-              
-              />
-              <label for="reglogin">Логин</label>
+              placeholder="Логин"
+              type="text"></b-input>
+              </b-input-group>
               <span v-for="error in errors" :key="error">{{ error }}</span>
-            </div>
             </ValidationProvider>
             <ValidationProvider name="Email" rules="required|email" v-slot="{ errors}">
-              <div class="input-field col s12">
-                <input
+              <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="envelope"></b-icon>
+              </b-input-group-prepend > 
+                <b-input
                   id="email"
                   v-model="registerData.email"
+                  placeholder="Е-почта"
                   type="email"
-                  
-                  :success="valid"
-                />
-                <label for="email">Е-почта</label>
+                  ></b-input>
+              </b-input-group>
                 <span v-for="error in errors" :key="error">{{ error }}</span>
-              </div>
             </ValidationProvider>
             <ValidationProvider name="confirm" rules="required|min:8" v-slot="{ errors}">
-              <div class="input-field col s12">
-                <input
+              <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="lock-fill"></b-icon>
+              </b-input-group-prepend >
+                <b-input
                   v-model="registerData.password"
+                  placeholder="Пароль"
                   id="regpassword"
-                  type="password"
-                  
-                />
-                <label for="regpassword">Пароль</label>
-                <span v-for="error in errors" :key="error">{{ error }}</span>
-              </div>
+                  type="password"></b-input>
+              </b-input-group>
+              <span v-for="error in errors" :key="error">{{ error }}</span>
             </ValidationProvider>
             <ValidationProvider rules="required|password:@confirm" v-slot="{ errors}">
-              <div class="input-field col s12">
-                <input
+              <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="lock-fill"></b-icon>
+              </b-input-group-prepend >
+                <b-input
                   v-model="registerData.passwordConfirm"
+                  placeholder="Подтверждение пароля"
                   id="passwordconfirm"
                   type="password"
-                  
                 />
-                <label for="passwordconfirm">Повторите Пароль</label>
-                <span v-for="error in errors" :key="error">{{ error }}</span>
-              </div>
+              </b-input-group>
+              <span v-for="error in errors" :key="error">{{ error }}</span>
             </ValidationProvider>
-            <ValidationProvider rules="required" v-slot="{ errors}">
-              <div class="input-field col s12">
-                <input v-model="registerData.departament" @input="departementComplete" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off">
-                <label for="autocomplete-input">Упраление или отдел</label>
-                <span v-for="error in errors" :key="error">{{ error }}</span>
-              </div>
-            </ValidationProvider>
+              <b-input-group class="mb-3">
+              <b-input-group-prepend  is-text > 
+                <b-icon icon="person-lines-fill"></b-icon>
+              </b-input-group-prepend >  
+              <b-input list="dep-list" v-model="registerData.departament" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off"></b-input>
+                <datalist id="dep-list">
+                  <option>Ваше управление или отдел</option>
+                  <option v-for="(item, index) in departamentItem" :key="index">{{ item }}</option>
+                </datalist>
+              </b-input-group>
             <button type="submit" class="submit">Регистрация</button>
-          </form>
+          </b-form>
         </ValidationObserver>
       </div>
     </div>
@@ -148,6 +149,11 @@ export default {
         departament: '',
         passwordConfirm: ''
       },
+      departamentItem: [
+        "Управление образования",
+        "Финансовое управление",
+        "Google"
+      ]
     };
   },
   methods: {
@@ -165,21 +171,11 @@ export default {
     async authRegister() {
       let res = await this.register(this.registerData)
       if(res.success){
-        this.$message(res.message)
+        this.$message(res.message, 'Успешная регистрация', 'success')
       }else{
-        this.$error(res.message)
+        this.$message(res.message, 'Ошибка регистрации', 'danger')
       }
     },
-    departementComplete(){
-      let elems = document.querySelectorAll('.autocomplete');
-      let instances = M.Autocomplete.init(elems, {
-        data: {
-          "Управление образования": null,
-          "Финансовое управление": null,
-          "Google": 'https://placehold.it/250x250'
-        }
-      });
-    }
   }
 };
 </script>

@@ -1,10 +1,10 @@
 export default {
   install(Vue, options){
-    Vue.prototype.$message = function(html){
-      M.toast({html, classes: "success", displayLength: 5000})
-    }
-    Vue.prototype.$error = function (html) {
-      M.toast({ html: `[Ошибка]: ${html}`, classes: "error", displayLength: 5000 })
+    Vue.prototype.$message = function(text, title, variant){
+      this.$bvToast.toast(text, {
+        title: title,
+        variant: variant,
+      })
     }
   }
 }
