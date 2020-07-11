@@ -2,7 +2,7 @@ import axios from "axios"
 
 export default({
   state: {
-    claims: null,
+    claims: [],
   },
   mutations: {
     set_claims(state, claims){
@@ -26,11 +26,12 @@ export default({
       return res
     },
     async getClaims({commit}, data){
-      console.log(data)
       let res = await axios.get('claims/', {
         params: data
       })
-      commit('set_claims', res.data.result)
+      let claims = await res.data.claims.results
+      // console.log(claims)
+      commit('set_claims', claims)
       return res
     }
   },

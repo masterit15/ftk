@@ -16,7 +16,9 @@ if(localStorage.user){
 const tokenData = JSON.parse(localStorage.user)
   Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${tokenData.accessToken}`
 }
+import vueKanban from 'vue-kanban'
 
+Vue.use(vueKanban)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.component('ValidationProvider', ValidationProvider);
