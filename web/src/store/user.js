@@ -26,11 +26,10 @@ export default ({
       return res
     },
     async getUsers({ commit }, data) {
-      console.log(data)
       let res = await axios.get('users/', {
         params: data
       })
-      commit('set_users', res.data.result)
+      commit('set_users', res.data.user.results)
       return res
     }
   },

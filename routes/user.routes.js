@@ -1,4 +1,6 @@
 const { Router } = require('express')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 const bcrypt = require('bcrypt')
 const { check, validationResult } = require('express-validator')
 const User = require('../models/User')
@@ -215,12 +217,11 @@ function paginatedResults(model) {
     const page = parseInt(req.query.page)
     const limit = parseInt(req.query.limit)
     const search = req.query.search
-    const searchparam = req.query.searchparam
     const startIndex = (page - 1) * limit
     const endIndex = page * limit
     const results = {}
     const total = await model.findAll({ raw: true })
-
+    console.log(search)
     results.pagin = {
       currentPage: page,
       total: total.length,
@@ -241,37 +242,35 @@ function paginatedResults(model) {
       /*
           условие поиска обращений
       */
-      results.results = await model.findAll({
-        order: [
-          ["id"]
-        ],
-        offset: (startIndex),
-        limit: limit,
+      // results.results = await model.findAll({
+      //   order: [
+      //     ["id"]
+      //   ],
+      //   offset: (startIndex),
+      //   limit: limit,
+      // })
+      // res.paginatedResults = results
+      if (search !== '' && search !== undefined) {
+        results.results = await model.findAll({
+          where: { username: { [Op.like]: '%' + search + '%' } },
+          order: [
+              ["id", 'DESC']
+          ],
+          offset: (startIndex),
+          limit: limit,
+          raw: true
       })
       res.paginatedResults = results
-      // if (search !== '' && search !== undefined) {
-      //     if (searchparam == "login") {
-      //         results.results = await model.find({ login: { $regex: regsearch } })
-      //         res.paginatedResults = results
-      //     } else if (searchparam == "permission") {
-      //         results.results = await model.find({ permission: { $regex: regsearch } })
-      //         res.paginatedResults = results
-      //     } else if (searchparam == "userName") {
-      //         results.results = await model.find({ userName: { $regex: regsearch } })
-      //         res.paginatedResults = results
-      //     }
-      // } else {
-      //     results.results = await model.findAll({
-      //         order:[
-      //             ["id"]
-      //         ],
-      //         offset:(startIndex),
-      //         limit : limit,
-      //     })
-      //     res.paginatedResults = results
-
-      //     console.log(results)
-      // }
+      } else {
+          results.results = await model.findAll({
+              order:[
+                  ["id"]
+              ],
+              offset:(startIndex),
+              limit : limit,
+          })
+          res.paginatedResults = results
+      }
 
       next()
     } catch (e) {

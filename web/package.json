@@ -13,13 +13,18 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
+    "jquery": "^3.5.1",
     "material-design-icons": "^3.0.1",
     "materialize-css": "^1.0.0-rc.2",
+    "simplebar-vue": "^1.5.1",
     "vee-validate": "^3.3.7",
     "vue": "^2.6.11",
     "vue-kanban": "^1.6.2",
     "vue-router": "^3.0.1",
-    "vuex": "^3.5.1"
+    "vue-the-mask": "^0.11.1",
+    "vue2-editor": "^2.10.2",
+    "vuex": "^3.5.1",
+    "ymaps": "^0.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

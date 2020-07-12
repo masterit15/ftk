@@ -1,63 +1,62 @@
 <template>
   <div id="claims">
     <b-container>
-      <kanban-board :stages="status" :blocks="blocks" @update-block="updateBlock">
-  <div v-for="stage in status" :slot="stage" :key="stage">
-    <h2>{{ langRuss(stage) }}</h2>
-  </div>
-  <div class="kanban_item" v-for="block in blocks" :slot="block.id" :key="block.id">
-    <div class="kanban_item_date">
-      {{ block.title }}
-    </div>
-    <div class="kanban_item_title">
-      {{ block.title }}
-    </div>
-  </div>
-</kanban-board>
-      <!-- <b-row>
-        <b-col v-for="claim in claims" :key="claim.id" xl="4">
-          <b-card
-            :title="claim.description"
-            img-src="https://picsum.photos/600/300/?image=25"
-            img-alt="Image"
-            img-top
-            tag="article"
-            class="mb-2 float-feft"
-          >
-            <b-card-text>Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Вопрос грамматики пустился наш, если встретил своих!</b-card-text>
-
-            <b-button href="#" variant="primary">Подробнее</b-button>
-          </b-card>
-        </b-col>
-      </b-row> -->
+    <b-row>
+      <b-col sm="4">
+        <b-form-input class="float-right" type="search" placeholder="Поиск"></b-form-input>
+      </b-col>
+    </b-row>
     </b-container>
+    <kanban-board :stages="status" :blocks="blocks" @update-block="updateStatus">
+      <div v-for="stage in status" :slot="stage" :key="stage" >
+        <h2>{{ langRuss(stage) }}</h2>
+      </div>
+      <div class="drag-item-content" v-for="(block, index) in blocks" :slot="block.id" :key="index" @click="openEditForm(block, index)">
+        <div class="drag-item-title">{{ block.title }}</div>
+        <div class="drag-item-date">{{ block.createDate }}</div>
+      </div>
+      <div v-for="stage in status" :key="stage" :slot="`footer-${stage}`">
+          <a href="" @click.prevent="() => addBlock(stage)">+ Add new block</a>
+          <div class="loadmore_btn">
+            <i class="fa fa-spinner" aria-hidden="true"></i>
+            <span>Загрузить еще?</span>
+          </div>
+      </div>
+    </kanban-board>
+    <transition name="slide-addform">
+      <add-form v-if="formtrigger" :formData="editClaim"/>
+    </transition>
   </div>
 </template>
 
 <script>
+import AddForm from '../components/AddForm'
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "claims",
   data() {
     return {
-      status: ['New', 'Worked', 'Done'],
-      blocks: [
-        {
-          id: 1,
-          status: 'New',
-          title: 'Test',
-        },
-        {
-          id: 2,
-          status: 'Worked',
-          title: 'Teasas',
-        },
-        {
-          id: 3,
-          status: 'Done',
-          title: 'Erffds',
-        },
-      ],
+      formtrigger: false,
+      status: ["New", "Worked", "Done"],
+      editClaim: {},
+      // blocks: [
+      //   {
+      //     id: 1,
+      //     createDate: "03.04.2020 в 11:05:33",
+      //     status: "New",
+      //     title: "Test"
+      //   },
+      //   {
+      //     id: 2,
+      //     status: "Worked",
+      //     title: "Teasas"
+      //   },
+      //   {
+      //     id: 3,
+      //     status: "Done",
+      //     title: "Erffds"
+      //   }
+      // ],
       filterParam: {
         page: 1,
         limit: 6,
@@ -75,32 +74,56 @@ export default {
     this.loadClaims();
   },
   computed: {
-    ...mapGetters(["user", "claims"])
+    ...mapGetters(['user', 'blocks'])
   },
   methods: {
-    ...mapActions(["getClaims"]),
+    ...mapActions(['getClaims']),
     async loadClaims() {
       this.filterParam.userId = this.user.userId;
       await this.getClaims(this.filterParam);
     },
-    updateBlock(id, status) {
+    updateStatus(id, status) {
       this.blocks.find(b => b.id === Number(id)).status = status;
     },
-    langRuss(satus){
-      let stat = ''
+    langRuss(satus) {
+      let stat = "";
       switch (satus) {
-        case 'Worked':
-          stat = 'В работе'
+        case "Worked":
+          stat = "В работе";
           break;
-      case 'Done':
-          stat = 'Обработан'
+        case "Done":
+          stat = "Обработан";
           break;
         default:
-          stat = 'Не обработан'
+          stat = "Не обработан";
           break;
       }
-      return stat
-    }
+      return stat;
+    },
+    openEditForm(claim) {
+      this.editClaim = claim
+      if (this.formtrigger) {
+        this.formtrigger = false;
+      }
+      setTimeout(() => {
+        this.formtrigger = !this.formtrigger;
+      }, 0);
+    },
+    addBlock(stage) {
+      let column = document.querySelector(`[data-status='${stage}']`)
+      let id = this.blocks.length + 1
+      this.blocks.push({
+        id: id,
+        status: stage,
+        title: `test-${id}`,
+      });
+      setTimeout(() => {
+        column.scrollTop = column.scrollHeight
+      }, 0);
+    },
+  },
+  components: {
+    AddForm
   }
 };
 </script>

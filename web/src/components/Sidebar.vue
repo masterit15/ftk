@@ -1,20 +1,16 @@
 <template>
-  <div id="sidebar">
-    <b-sidebar
-      id="sidebar-backdrop"
-      title="АМС"
-      shadow
-      bg-variant="white"
-    >
-      <b-list-group>
-        <b-list-group-item v-for="item in listItems" :key="item.title">
+  <div id="sidebar" ref="sidebar">
+    <div class="sidebar_btn" @click="sidebarTrigger"><i class="fa fa-th-list"></i></div>
+    <div class="sidebar_list">
+    <simplebar class="scrollbar" data-simplebar-auto-hide="true" data-simplebar-force-visible="x">
+        <div class="sidebar_item" v-for="item in listItems" :key="item.title">
           <router-link :to="item.href">
             <i :class="'fa ' + item.icon"></i>
-            {{ item.title }}
+            <span class="sidebar_item_text">{{ item.title }}</span>
           </router-link>
-        </b-list-group-item>
-      </b-list-group>
-    </b-sidebar>
+        </div>
+    </simplebar>
+      </div>
   </div>
 </template>
 
@@ -31,7 +27,10 @@ data(){
   }
 },
 methods: {
-
+  sidebarTrigger(){
+    document.querySelector('body').classList.toggle('sidebar')
+    this.$refs.sidebar.classList.toggle('open')
+  }
 }
 }
 </script>

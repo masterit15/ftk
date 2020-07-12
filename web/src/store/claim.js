@@ -2,16 +2,17 @@ import axios from "axios"
 
 export default({
   state: {
-    claims: [],
+    blocks: [],
   },
   mutations: {
     set_claims(state, claims){
-      state.claims = claims
+      state.blocks = claims
     }
   },
   actions: {
     async addClaims({dispatch}, data){
       let res = await axios.post('claims/', data)
+      console.log(res)
       dispatch('getClaims')
       return res
     },
@@ -36,6 +37,6 @@ export default({
     }
   },
   getters: {
-    claims: state => state.claims
+    blocks: state => state.blocks
   }
 })

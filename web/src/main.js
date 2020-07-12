@@ -17,7 +17,13 @@ const tokenData = JSON.parse(localStorage.user)
   Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${tokenData.accessToken}`
 }
 import vueKanban from 'vue-kanban'
+import simplebar from 'simplebar-vue';
+import 'simplebar/dist/simplebar.min.css';
 
+import Vue2Editor from "vue2-editor";
+Vue.use(Vue2Editor);
+
+Vue.component('simplebar', simplebar)
 Vue.use(vueKanban)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)

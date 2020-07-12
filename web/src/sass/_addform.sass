@@ -5,10 +5,256 @@
   height: 100%
   padding: 20px
   top: 0
-  right: 0      
+  right: 0 
+  box-shadow: -2px 1px 3px 0px #646b7930
+  z-index: 999 
+  & .close_btn
+    position: absolute
+    cursor: pointer
+    left: -70px
+    top: 50px
+    width: 50px
+    height: 50px
+    text-align: center
+    font-size: 1.7rem
+    line-height: 50px
+    border-radius: 5px 0 0 5px
+    box-shadow: -2px 1px 3px 0px #646b7930
+    background-color: #fff
+    transition: all .3s ease
+    &:hover
+      transition: all .3s ease
+      color: $red
+  & .addres_dd
+    position: absolute
+    background-color: #fff
+    margin-top: 5px
+    width: 100%
+    height: auto
+    box-shadow: $shadow_h
+    border-radius: 5px
+    padding: 20px 0
+    border: 1px solid $grey
+    z-index: 30
+    .slide-addres-dd-enter-active
+      transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1)
+    .slide-addres-dd-enter,
+    .slide-addres-dd-leave-to
+      transform: translateX(50px)
+      opacity: 0
+    li
+      list-style-type: none
+#timelines
+.timeline
+  margin: 0
+  padding: 0px 30px 0px 80px
+  &_item 
+    position: relative
+    list-style-type: none  
+    height: auto
+    border-radius: 10px
+    margin-bottom: 20px
+    min-height: 100px
+    box-shadow: $shadow
+    &:before
+      content: ''
+      position: absolute
+      left: -50px
+      top: 0
+      width: 2px
+      height: 120%
+      background-color: inherit
+      // background-color: inherit
+    &:last-child
+      &::before
+        display: none
+  &_content
+    position: relative
+    width: 100%
+    height: auto
+    min-height: 100px
+    border-radius: 0px 9px 9px 0px
+    background-color: #fff
+    list-style-type: none  
+    padding: 10px 20px
+    height: 100%
+  &_color
+    position: absolute
+    left: 0px
+    top: 0px
+    width: 8px
+    height: 100%
+    border-radius: 10px 0 0 10px
+    border: 2px solid inherit
+    z-index: 5
+  &_autor
+    font-size: 1.1rem
+  &_time
+    position: absolute
+    right: 15px
+    top: 15px
+  &_text
+    width: 100%
+    height: 100%
+  &_icon
+    position: absolute
+    left: -74px
+    top: 0
+    width: 50px
+    height: 50px
+    display: block
+    color: #fff
+    border-radius: 100%
+    text-align: center
+    font-size: 1.7rem
+    line-height: 50px
+    background-color: inherit
+    &::before
+      content: ''
+      position: absolute
+      top: 50%
+      right: -30px
+      width: 30px
+      height: 2px
+      background-color: inherit
 .slide-addform-enter-active
   transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1)
 .slide-addform-enter,
 .slide-addform-leave-to
   transform: translateX(50px)
-  opacity: 0 
+  opacity: 0
+.comment-enter
+  opacity: 0
+.comment-leave-to
+  transform: translateX(50px)
+.comment-move
+  transition: all 0.3s ease;
+
+.comment_btn
+  cursor: pointer
+  width: 100%
+  height: 50px
+  background-color: #fff
+  color: #50caa1
+  text-align: right
+  font-size: 1.2rem
+  margin: 15px 0
+.slide-editor-enter-active
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1)
+.slide-editor-enter,
+.slide-editor-leave-to
+  transform: translateY(-50px)
+  opacity: 0
+.editor
+  width: 100%
+  height: auto
+  margin-bottom: 50px 
+  & .btn
+    margin: 20px 0
+.quillWrapper .ql-snow.ql-toolbar
+  border-radius: 5px 5px 0 0
+.ql-container.ql-snow
+  border-radius: 0 0 5px 5px
+.blue
+  background-color: $blue
+.yellow
+  background-color: $yellow
+.purple
+  background-color: $purple
+.green
+  background-color: $red
+// file uploader
+.form_row__photo-previews
+  width: 100%
+  min-height: 80px
+  text-align: center
+  padding: 30px 0
+  position: relative
+  & #js-photo-upload
+    position: absolute
+    width: 100%
+    height: 100%
+    left: 0
+    top: 0
+    display: none
+  & .add_photo
+    &-content
+      width: 100%
+      height: auto
+    &-item
+      min-height: 80px
+      line-height: 80px
+      cursor: pointer
+      font-size: 1.2rem
+      border: 1px solid rgba(#333,0.1)
+      border-radius: 5px
+      margin-bottom: 20px
+      transition: all .3s ease
+      &:hover
+        transition: all .3s ease
+        background-color: #f9f9f9
+
+  & #uploadImagesList
+    padding: 0
+    margin: 0
+    width: 100%
+    display: flex
+    justify-content: center
+    & .item
+      width: 130px
+      min-height: 100px 
+      margin-left: 5px
+      border: 2px dashed rgba(#333,0.3)
+      padding: 0
+      border-radius: 4px
+      overflow: hidden
+      box-shadow: none
+      position: relative
+      &::after
+        content: ''
+        position: absolute
+        width: 100%
+        height: 100%
+        left: 0
+        top: 0
+        opacity: 0
+        background-color: rgba($blue, 0.6)
+      & .img-wrap, & .icon-wrap
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        overflow: hidden
+        & img
+          height: auto
+          width: 150px
+      & .icon-wrap
+        text-align: center
+        line-height: 130px
+        & .fa
+          font-size: 4rem
+      &:hover
+        box-shadow: none
+        &::after
+          opacity: 1
+        & .delete-link
+          display: block
+      & .delete-link
+        position: absolute
+        right: 0px
+        top: 0px
+        cursor: pointer
+        width: 35px
+        height: 35px
+        padding: 5px
+        background-color: #fff
+        border-radius: 0px 0px 0px 5px
+        background-color: $blue
+        color: #fff
+        z-index: 20
+        text-align: center
+        font-size: 1.5rem
+        display: none
+        & .fa
+          display: block

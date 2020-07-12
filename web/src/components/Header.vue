@@ -1,19 +1,14 @@
 <template>
   <div id="headers">
     <b-navbar toggleable="lg" variant="white" >
-      <b-col sm="2">
-        <b-button variant="outline-dark" v-b-toggle.sidebar-backdrop>
-          <i class="fa fa-bars"></i>
-        </b-button>
-      </b-col>
-      <b-col sm="4" offset-xl="2">
+      <b-col sm="4">
         <b-form-input class="float-right" type="search" placeholder="Поиск"></b-form-input>
       </b-col>
-      <b-col sm="4">
+      <b-col sm="4" offset-xl="4">
         <b-navbar-nav>
           <!-- <b-nav-item href="#">Link</b-nav-item> -->
         </b-navbar-nav>
-        <b-button variant="outline-success" @click="formtrigger = !formtrigger">
+        <b-button variant="outline-success" @click="openEditForm">
           <b-icon icon="plus-square"></b-icon>
         </b-button>
         <b-navbar-nav class="float-right">
@@ -53,6 +48,14 @@ export default {
       } else {
         this.$message("", "Возникла ошибка при выходе из системы", "warning");
       }
+    },
+    openEditForm() {
+      if (this.formtrigger) {
+        this.formtrigger = false;
+      }
+      setTimeout(() => {
+        this.formtrigger = !this.formtrigger;
+      }, 0);
     }
   },
   components: {

@@ -1,0 +1,106 @@
+.drag
+  &-container
+    max-width: 1450px
+  &-item
+    position: relative
+    cursor: pointer
+    border-radius: 5px 
+    margin: 15px 5px
+    padding-left: 20px
+    height: 140px
+    background-color: #fff
+    text-shadow: 0 1px 3px #32323276
+    box-shadow: $shadow
+    overflow: hidden
+    transition: all .3s ease
+    transform: skewY(0deg) 
+    &:hover
+      box-shadow: $shadow_h
+      transition: all .3s ease
+    &-content
+      position: absolute
+      left: 0
+      top: 0
+      width: 100%
+      height: 100%
+      color: #333
+      padding: 15px 15px 15px 20px
+      &:before
+        content: ''
+        position: absolute
+        left: 0
+        top: 0
+        width: 8px
+        height: 100%
+    &-date
+      position: absolute
+      right: 10px
+      bottom: 10px
+      width: 100%
+      text-align: right
+      font-family: $font_bold
+    &-title
+    &-departament
+  &-inner
+    &-list
+      height: 80vh
+      overflow-y: auto
+      &[data-status="New"]
+        & .drag-item-content
+          // background-color: rgba($red,0.1)
+          &:before
+            background-color: $red
+      &[data-status="Worked"]
+        & .drag-item-content
+          // background-color: rgba($yellow,0.1)
+          &:before
+            background-color: $yellow
+      &[data-status="Done"]
+        & .drag-item-content
+          // background-color: rgba($green,0.1)
+          &:before
+            background-color: $green
+
+  &-column
+    background-color: transparent
+    border-radius: 5px
+    &-header
+      width: 100%
+      height: 50px
+      font-size: 1.6rem
+      font-weight: bold
+      font-family: $font_black
+      color: #fff
+      border-radius: 5px
+      padding: 0 20px
+    &-New
+      & .drag-column-header
+        background-color: $red
+    &-Worked
+      & .drag-column-header
+        background-color: $yellow
+    &-Done
+      & .drag-column-header
+        background-color: $green
+.gu-unselectable
+  & .drag
+    &-column
+      background: #fff
+    &-item
+      opacity: 0.6
+      background-color: #fff
+      transition: all .3s ease
+      &-content
+        &:before
+          background-color: #ddd
+      &.is-moving
+        cursor: move
+        transition: all .3s ease
+        &.gu-transit
+          opacity: 0.3
+          transform: scale(1.0, 1.0)
+        &.gu-mirror
+          transform: matrix(1.00,-0.01,0.20,0.98,0,0)
+      &.is-moved 
+        transition: all .3s ease
+        transform: matrix(0)
