@@ -10,6 +10,7 @@
         </b-navbar-nav>
         <b-button variant="outline-success" @click="openEditForm">
           <b-icon icon="plus-square"></b-icon>
+          Добавить
         </b-button>
         <b-navbar-nav class="float-right">
           <b-avatar variant="info"></b-avatar>

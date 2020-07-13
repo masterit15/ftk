@@ -1,7 +1,7 @@
 <template>
-  <div id="fileuploader">
+  <div id="fileuploader" :class="'uploader-'+uploader">
     <div class="form_row__photo-previews">
-      <input type="file" name="more_photos[]" multiple id="js-photo-upload" />
+      <input type="file" name="files[]" multiple id="js-photo-upload" />
       <div class="add_photo-content">
         <div class="add_photo-item"></div>
         <ul id="uploadImagesList">
@@ -27,6 +27,9 @@
 import $ from "jquery";
 export default {
   name: "fileuploader",
+  props: {
+    uploader: String
+  },
   data() {
     return {
       files: []
@@ -34,11 +37,7 @@ export default {
   },
   mounted() {
     this.uploaderImg(
-      ".add_photo-item",
-      "#js-photo-upload",
-      "#uploadImagesList",
-      false,
-      false
+      this.uploader
     );
   },
   methods: {
@@ -46,11 +45,16 @@ export default {
       this.files = files
       this.$emit('files', this.files)
     },
-    uploaderImg(addButton, addInput, imgList, reset = false, edit = false) {
+    uploaderImg(uploader, reset=false, edit=false) {
+      let that = this
+$(`.uploader-${uploader}`).each(function(){
+  let addButton = $(this).find(".add_photo-item")
+  let addInput = $(this).find("#js-photo-upload")
+  let imgList = $(this).find("#uploadImagesList")
+  console.log(addButton)
       $(addButton).on("click", function() {
         $(addInput).trigger("click");
       });
-      let that = this
       let maxFileSize = 5 * 1024 * 1024; // (байт) Максимальный размер файла (2мб)
       let queue = {};
       let imagesList = $(imgList);
@@ -201,7 +205,9 @@ export default {
       }
       // Отображение лимита при запуске
       limitDisplay();
+      })
     }
+    
   }
 };
 </script>

@@ -6,6 +6,7 @@
     <transition name="slide-editor">
       <div v-if="commentEditor" class="editor">
         <vue-editor v-model="timelineContent" :editor-toolbar="customToolbar" />
+<FileUploader uploader="2"/>
         <button @click="addEvents" class="btn btn-outline-primary">Добавить</button>
       </div>
     </transition>
@@ -31,7 +32,9 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex"
+import FileUploader from './FileUploader'
+
 export default {
   name: "timelines",
   data() {
@@ -162,7 +165,10 @@ export default {
       }
       return color;
     }
-  }
+  },
+  components: {
+    FileUploader,
+  },
 };
 </script>
 

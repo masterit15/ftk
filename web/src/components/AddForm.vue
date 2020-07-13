@@ -37,7 +37,7 @@
             </b-row>
             <ResponsibleSearch v-on:respons="getResponsoble"/>
             <AddressSearch v-on:address="getAddress"/>
-            <FileUploader/>
+            <FileUploader uploader="1"/>
             <label>Текст заявки:</label>
             <vue-editor class="mb-md-3" v-model="claim.description" :editor-toolbar="customToolbar" />
           </b-form-group>
