@@ -1,15 +1,16 @@
 <template>
   <div id="sidebar" ref="sidebar">
+    
     <div class="sidebar_btn" @click="sidebarTrigger"><i class="fa fa-th-list"></i></div>
+    <div class="vuebar-block" v-bar>
     <div class="sidebar_list">
-    <simplebar class="scrollbar" data-simplebar-auto-hide="true" data-simplebar-force-visible="x">
         <div class="sidebar_item" v-for="item in listItems" :key="item.title">
           <router-link :to="item.href">
             <i :class="'fa ' + item.icon"></i>
             <span class="sidebar_item_text">{{ item.title }}</span>
           </router-link>
         </div>
-    </simplebar>
+    </div>
       </div>
   </div>
 </template>

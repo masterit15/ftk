@@ -7,22 +7,25 @@
       </b-col>
     </b-row>
     </b-container>
-    <kanban-board :stages="status" :blocks="blocks" @update-block="updateStatus">
+    <kanban :stages="status" :blocks="blocks" @update-block="updateStatus">
       <div v-for="stage in status" :slot="stage" :key="stage" >
         <h2>{{ langRuss(stage) }}</h2>
+        <div class="add_btn" @click.prevent="() => addBlock(stage)">
+            <i class="fa fa-plus"></i>
+        </div>
       </div>
-      <div class="drag-item-content" v-for="(block, index) in blocks" :slot="block.id" :key="index" @click="openEditForm(block, index)">
-        <div class="drag-item-title">{{ block.title }}</div>
-        <div class="drag-item-date">{{ block.createDate }}</div>
-      </div>
+        <div class="drag-item-content" v-for="(block, index) in blocks" :slot="block.id" :key="index" @click="openEditForm(block, index)">
+          <div class="drag-item-title">{{ block.title }}</div>
+          <div class="drag-item-date">{{ block.createDate }}</div>
+        </div>
       <div v-for="stage in status" :key="stage" :slot="`footer-${stage}`">
-          <a href="" @click.prevent="() => addBlock(stage)">+ Add new block</a>
           <div class="loadmore_btn">
-            <i class="fa fa-spinner" aria-hidden="true"></i>
+            <i class="fa fa-spinner"></i>
             <span>Загрузить еще?</span>
           </div>
       </div>
-    </kanban-board>
+      
+    </kanban>
     <transition name="slide-addform">
       <add-form v-if="formtrigger" :formData="editClaim"/>
     </transition>
@@ -117,9 +120,9 @@ export default {
         status: stage,
         title: `test-${id}`,
       });
-      setTimeout(() => {
-        column.scrollTop = column.scrollHeight
-      }, 0);
+      // setTimeout(() => {
+      //   column.scrollTop = column.scrollHeight
+      // }, 0);
     },
   },
   components: {

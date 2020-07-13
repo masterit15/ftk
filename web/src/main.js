@@ -6,27 +6,35 @@ import axios from 'axios'
 import router from './router'
 import store from './store'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 import './vee-validate'
+
 import messages from './plugins/messages'
-Vue.config.productionTip = false
 Vue.use(messages)
-Vue.prototype.$http = axios
-if(localStorage.user){
-const tokenData = JSON.parse(localStorage.user)
-  Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${tokenData.accessToken}`
-}
-import vueKanban from 'vue-kanban'
-import simplebar from 'simplebar-vue';
-import 'simplebar/dist/simplebar.min.css';
+
+Vue.config.productionTip = false
+
+// import vueKanban from 'vue-kanban'
+import vueKanban from './components/kanban/Kanban.vue'
+// Vue.use(vueKanban)
+Vue.component('Kanban', vueKanban);
 
 import Vue2Editor from "vue2-editor";
 Vue.use(Vue2Editor);
 
-Vue.component('simplebar', simplebar)
-Vue.use(vueKanban)
-Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
+import Vuebar from 'vuebar';
+Vue.use(Vuebar);
+
+
+Vue.prototype.$http = axios
+if (localStorage.user) {
+  const tokenData = JSON.parse(localStorage.user)
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${tokenData.accessToken}`
+}
+
+
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
 

@@ -6,6 +6,7 @@
     </div>
     <b-row>
       <b-col xl="6">
+        <div class="vuebar-block" v-bar>
         <b-form @submit.prevent="onSubmit">
           <b-form-group>
             <label>Статус заявки:</label>
@@ -19,8 +20,8 @@
                   :today-button="true"
                   :value-as-date="true"
                   :date-format-options="{ day: '2-digit', month: '2-digit', year: 'numeric' }"
-                  v-model="date"
-                  :value="date"
+                  v-model="credate"cre
+                  :value="credate"
                   type="date"
                 ></b-form-datepicker>
               </b-col>
@@ -28,8 +29,35 @@
                 <label>Время создания:</label>
                 <b-form-timepicker 
                 class="mb-md-3" 
-        v-model="time" 
-        :value="time" 
+        v-model="cretime" 
+        :value="cretime" 
+        :hour12="false" 
+        show-seconds 
+        ></b-form-timepicker > 
+              </b-col>
+            </b-row>
+                        <b-row>
+              <b-col sm="6">
+                <label>Контрольная дата:</label>
+                <b-form-datepicker
+                class="mb-md-3"
+                  locale="ru"
+                  placeholder="Не выставлена"
+                  :today-button="true"
+                  :value-as-date="true"
+                  :date-format-options="{ day: '2-digit', month: '2-digit', year: 'numeric' }"
+                  v-model="condate"
+                  :value="condate"
+                  type="date"
+                ></b-form-datepicker>
+              </b-col>
+              <b-col sm="6">
+                <label>Контрольное время:</label>
+                <b-form-timepicker 
+                placeholder="Не выставлено"
+                class="mb-md-3" 
+        v-model="contime" 
+        :value="contime" 
         :hour12="false" 
         show-seconds 
         ></b-form-timepicker > 
@@ -44,6 +72,7 @@
           <b-button type="submit" variant="success">Сохранить</b-button>
           <b-button type="reset" variant="warning">Обновить</b-button>
         </b-form>
+        </div>
       </b-col>
       <b-col xl="6">
         <Timelines/>
@@ -80,13 +109,15 @@ export default {
     return {
       overlay: false,
       responsible: '',
-      date:
+      credate:
         new Date().getFullYear() +
         "-" +
         new Date().getMonth() +
         "-" +
         new Date().getDate(),
-      time: new Date().getHours()+':'+new Date().getMinutes()+':'+new Date().getSeconds(),
+      cretime: new Date().getHours()+':'+new Date().getMinutes()+':'+new Date().getSeconds(),
+      condate: '',
+      contime: '',
       customToolbar: [
         // [{ header: [false, 1, 2, 3, 4, 5, 6] }],
         ["bold", "italic", "underline"], // toggled buttons
@@ -112,6 +143,12 @@ export default {
       status: "New",
     };
   },
+  watch: {
+    showform(){
+      let body = document.querySelector('body')
+      body.style.position = 'relative'
+    }
+  },
   computed: {
     ...mapGetters(["user"]),
     claim() {
@@ -133,6 +170,11 @@ export default {
       }
       return this.formData;
     }
+  },
+  created() {
+    let body = document.querySelector('body')
+    body.style.position = 'fixed'
+    body.style.width = '100%'
   },
   methods: {
     ...mapActions(["addClaims"]),
@@ -163,7 +205,10 @@ export default {
       }
       return status;
     },
-  }
+  },
+  beforeDestroy() {
+    
+  },
 };
 </script>
 

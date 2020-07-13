@@ -6,12 +6,12 @@
     <transition name="slide-editor">
       <div v-if="commentEditor" class="editor">
         <vue-editor v-model="timelineContent" :editor-toolbar="customToolbar" />
-<FileUploader uploader="2"/>
+        <FileUploader uploader="2" />
         <button @click="addEvents" class="btn btn-outline-primary">Добавить</button>
       </div>
     </transition>
-      <transition-group name="comment" tag="ul" class="timeline">
-
+    <div class="vuebar-block" v-bar>
+    <transition-group name="comment" tag="ul" class="timeline">
       <li
         :class="'timeline_item ' + eventColor(item.event)"
         v-for="item in timeline"
@@ -27,18 +27,22 @@
           <div class="timeline_text" v-html="item.text"></div>
         </div>
       </li>
-      </transition-group>
+    </transition-group>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex"
-import FileUploader from './FileUploader'
+import { mapGetters, mapActions } from "vuex";
+import FileUploader from "./FileUploader";
 
 export default {
   name: "timelines",
   data() {
     return {
+      settings: {
+        maxScrollbarLength: 60
+      },
       events: [
         {
           id: 1,
@@ -87,7 +91,7 @@ export default {
         // [{ color: [] }, { background: [] }], // dropdown with defaults from theme
         ["link", "image", "video"],
         ["clean"] // remove formatting button
-      ],
+      ]
     };
   },
   computed: {
@@ -100,15 +104,15 @@ export default {
   },
   methods: {
     ...mapActions(["getTimelines"]),
-    addEvents(){
+    addEvents() {
       let event = {
-          id: this.events.length + 1,
-          event: "comment",
-          autor: "admin",
-          text: this.timelineContent,
-          time: "03.05.2020 в 11:22"
-        }
-      this.events.push(event)
+        id: this.events.length + 1,
+        event: "comment",
+        autor: "admin",
+        text: this.timelineContent,
+        time: "03.05.2020 в 11:22"
+      };
+      this.events.push(event);
     },
     langRuss(status) {
       switch (status) {
@@ -167,8 +171,8 @@ export default {
     }
   },
   components: {
-    FileUploader,
-  },
+    FileUploader
+  }
 };
 </script>
 

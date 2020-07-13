@@ -44,23 +44,21 @@
   &-inner
     &-list
       height: 80vh
+      padding-right: 15px!important
+      position: relative
       overflow-y: auto
       &[data-status="New"]
         & .drag-item-content
-          // background-color: rgba($red,0.1)
           &:before
             background-color: $red
       &[data-status="Worked"]
         & .drag-item-content
-          // background-color: rgba($yellow,0.1)
           &:before
             background-color: $yellow
       &[data-status="Done"]
         & .drag-item-content
-          // background-color: rgba($green,0.1)
           &:before
             background-color: $green
-
   &-column
     background-color: transparent
     border-radius: 5px
@@ -73,15 +71,48 @@
       color: #fff
       border-radius: 5px
       padding: 0 20px
+    & .add_btn
+      position: absolute
+      right: 0px
+      top: 0
+      cursor: pointer
+      width: 50px
+      text-align: center
+      line-height: 50px
+      color: #fff
+      font-weight: bold
+      transition: all .3s ease
+      &:hover
+        opacity: 0.5
+        transition: all .3s ease
     &-New
-      & .drag-column-header
+      & .drag-column-header, .drag-column-footer
         background-color: $red
     &-Worked
-      & .drag-column-header
+      & .drag-column-header, .drag-column-footer
         background-color: $yellow
     &-Done
-      & .drag-column-header
+      & .drag-column-header, .drag-column-footer
         background-color: $green
+    &-footer
+      padding: 15px
+      & .loadmore_btn
+        cursor: pointer
+        width: auto
+        text-align: center
+        border-radius: 5px
+        height: 40px
+        margin: 0 10px
+        line-height: 40px
+        color: #fff
+        font-weight: bold
+        padding: 0 15px
+        border: 1px solid #fff
+        transition: all .3s ease
+        &:hover
+          color: #333
+          background-color: #fff
+          transition: all .3s ease
 .gu-unselectable
   & .drag
     &-column

@@ -1,0 +1,41 @@
+.vuebar
+  &-block
+    height: 100vh
+    width: 100%
+.vb
+  &-dragger
+    z-index: 99
+    width: 12px
+    right: 0px
+    &-styler
+      backface-visibility: hidden
+      transform: rotate3d(0, 0, 0, 0)
+      transition: background-color 100ms ease-out, margin 100ms ease-out, height 100ms ease-out
+      background-color: rgba($green, 0.5)
+      margin: 5px 5px 5px 0
+      border-radius: 20px
+      height: calc(100% - 10px)
+      display: block
+  &-scrolling-phantom
+    .vb
+      &-dragger
+        &-styler
+          background-color: rgba($green, 0.6)
+  &:hover > 
+    .vb
+      &-dragger
+        &-styler
+          background-color: rgba($green, 0.7)
+          margin: 0px
+          height: 100%
+      &-dragging 
+        & .vb-dragger
+            &-styler
+              background-color: rgba($green, 0.7)
+              margin: 0px
+              height: 100%
+  &-dragging-phantom 
+    .vb
+      &-dragger
+        &-styler
+          background-color: rgba($green, 0.7)

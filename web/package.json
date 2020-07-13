@@ -13,6 +13,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
+    "dragula": "^3.7.2",
     "jquery": "^3.5.1",
     "material-design-icons": "^3.0.1",
     "materialize-css": "^1.0.0-rc.2",
@@ -23,7 +24,9 @@
     "vue-router": "^3.0.1",
     "vue-the-mask": "^0.11.1",
     "vue2-editor": "^2.10.2",
+    "vuebar": "0.0.20",
     "vuex": "^3.5.1",
+    "xstate": "^4.11.0",
     "ymaps": "^0.2.1"
   },
   "devDependencies": {
