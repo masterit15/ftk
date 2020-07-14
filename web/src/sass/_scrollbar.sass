@@ -4,6 +4,7 @@
     width: 100%
     display: flex
 .vb
+<<<<<<< HEAD
   > .vb-scrolling
     background-color: transparent
   > .vb-dragger
@@ -12,14 +13,27 @@
     background-color: rgba(#333,0.6)
     border-radius: 20px
     right: 0
+=======
+  > .vb-dragger
+    z-index: 9999
+    width: 12px
+    right: 0px
+
+>>>>>>> a6baf00656c93721618daaeaf3dd386cf88e545b
     > .vb-dragger-styler
       backface-visibility: hidden
       transform: rotate3d(0, 0, 0, 0)
       transition: background-color 100ms ease-out, margin 100ms ease-out, height 100ms ease-out
+<<<<<<< HEAD
       background-color: rgba(48, 121, 244, 0.1)
       margin: 0
+=======
+      background-color: rgba($green, 0.3)
+      margin: 5px 5px 5px 0
+>>>>>>> a6baf00656c93721618daaeaf3dd386cf88e545b
       border-radius: 20px
       display: block
+<<<<<<< HEAD
   &.vb-scrolling-phantom > .vb-dragger
     background-color: rgba(#333,0.6)
   &.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler
@@ -33,3 +47,16 @@
 .vb-scrolling
   > .vb-dragger
     background-color: transparent
+=======
+
+  &.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler
+    background-color: rgba($green, 0.5)
+
+  > .vb-dragger:hover > .vb-dragger-styler, &.vb-dragging > .vb-dragger > .vb-dragger-styler
+    background-color: rgba($green, 0.7)
+    margin: 0px
+    height: 100%
+
+  &.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler
+    background-color: rgba($green, 0.7)
+>>>>>>> a6baf00656c93721618daaeaf3dd386cf88e545b
