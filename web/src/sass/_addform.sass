@@ -5,6 +5,7 @@
   height: 100%
   top: 0
   right: 0 
+  padding-top: 30px
   box-shadow: -2px 1px 3px 0px #646b7930
   z-index: 999 
   & form
@@ -57,6 +58,7 @@
     margin-bottom: 20px
     min-height: 100px
     box-shadow: $shadow
+    transition: all .3s ease
     &:before
       content: ''
       position: absolute
@@ -92,8 +94,9 @@
     font-size: 1.1rem
   &_time
     position: absolute
-    right: 15px
-    top: 15px
+    right: 10px
+    top: 10px
+    color: #a7a5a5
   &_text
     width: 100%
     height: 100%
@@ -137,7 +140,7 @@
   height: 50px
   background-color: #fff
   color: #50caa1
-  text-align: right
+  text-align: center
   font-size: 1.2rem
   margin: 15px 0
 .slide-editor-enter-active
@@ -147,11 +150,49 @@
   transform: translateY(-50px)
   opacity: 0
 .editor
-  width: 100%
-  height: auto
-  margin-bottom: 50px 
-  & .btn
-    margin: 20px 0
+  margin: 0px 20px 20px 80px
+  position: relative
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14)
+  border-radius: 10px
+  padding: 20px 
+  &:before
+    content: ''
+    position: absolute
+    left: -50px
+    top: 0
+    width: 2px
+    height: 120%
+    background-color: $yellow
+  &:after
+    content: ''
+    position: absolute
+    left: 0px
+    top: 0
+    width: 8px
+    height: 100%
+    border-radius: 10px 0 0 10px
+    background-color: $yellow
+  &_icon
+    position: absolute
+    left: -74px
+    top: 0
+    width: 50px
+    height: 50px
+    display: block
+    color: #fff
+    border-radius: 100%
+    text-align: center
+    font-size: 1.7rem
+    line-height: 50px
+    background-color: $yellow
+    &::before
+      content: ''
+      position: absolute
+      top: 50%
+      right: -30px
+      width: 30px
+      height: 2px
+      background-color: inherit
 .quillWrapper .ql-snow.ql-toolbar
   border-radius: 5px 5px 0 0
 .ql-container.ql-snow
@@ -167,9 +208,9 @@
 // file uploader
 .form_row__photo-previews
   width: 100%
-  min-height: 80px
+  min-height: 50px
   text-align: center
-  padding: 30px 0
+  padding: 20px 0
   position: relative
   & #js-photo-upload
     position: absolute
@@ -183,13 +224,13 @@
       width: 100%
       height: auto
     &-item
-      min-height: 80px
-      line-height: 80px
+      min-height: 50px
+      line-height: 50px
       cursor: pointer
       font-size: 1.2rem
       border: 1px solid rgba(#333,0.1)
       border-radius: 5px
-      margin-bottom: 20px
+      margin-bottom: 10px
       transition: all .3s ease
       &:hover
         transition: all .3s ease
@@ -259,3 +300,13 @@
         display: none
         & .fa
           display: block
+.ql
+  &-editor
+    min-height: 120px!important
+  &-align
+    &-left
+      text-align: left
+    &-center
+      text-align: center
+    &-right
+      text-align: right
