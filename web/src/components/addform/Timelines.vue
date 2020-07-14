@@ -8,6 +8,7 @@
         <input placeholder="Добавить комментарий" :class="'add_comment show-'+!commentEditor"  @click="commentEditor = !commentEditor"/>
       <transition name="fade">
         <div :class="'show-'+commentEditor">
+          
       <vue-editor
         placeholder="Текст комментария"
         v-model="timelineContent"
