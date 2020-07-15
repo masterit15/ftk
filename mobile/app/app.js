@@ -3,10 +3,10 @@ import Vue from "nativescript-vue";
 
 import routes from "./routes";
 import BackendService from "./services/backend-service";
+require ("nativescript-local-notifications");
 
 // Uncommment the following to see NativeScript-Vue output logs
 // Vue.config.silent = false;
-
 const backendService = new BackendService();
 Vue.prototype.$backendService = backendService;
 
