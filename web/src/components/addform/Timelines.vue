@@ -1,33 +1,44 @@
 <template>
   <div id="timelines">
-    <div class="comment_btn" @click="commentEditor = !commentEditor">
-      <i class="fa fa-comment-o" aria-hidden="true"></i>Добавить комментарий
-    </div>
-    <transition name="slide-editor">
-      <div v-if="commentEditor" class="editor">
-        <vue-editor v-model="timelineContent" :editor-toolbar="customToolbar" />
-        <FileUploader uploader="2" />
-        <button @click="addEvents" class="btn btn-outline-primary">Добавить</button>
+    
+    <div class="editor">
+      <div class="editor_icon">
+        <i class="fa fa-comment"></i>
       </div>
-    </transition>
+        <input placeholder="Добавить комментарий" :class="'add_comment show-'+!commentEditor"  @click="commentEditor = !commentEditor"/>
+      <transition name="fade">
+        <div :class="'show-'+commentEditor">
+          
+      <vue-editor
+        placeholder="Текст комментария"
+        v-model="timelineContent"
+        :editor-toolbar="customToolbar"
+      />
+      <FileUploader uploader="2" />
+      <button @click="addEvents" class="btn btn-outline-success">Добавить</button>
+      <button @click="commentEditor = !commentEditor, timelineContent = ''" class="btn btn-outline-warning">Отмена</button>
+      </div>
+      </transition>
+    </div>
+    
     <div class="vuebar-block" v-bar>
-    <transition-group name="comment" tag="ul" class="timeline">
-      <li
-        :class="'timeline_item ' + eventColor(item.event)"
-        v-for="item in timeline"
-        :key="item.id"
-      >
-        <span :class="'timeline_color ' + eventColor(item.event)"></span>
-        <div :class="'timeline_icon ' + eventColor(item.event)">
-          <i :class="'fa ' + eventIcon(item.event)"></i>
-        </div>
-        <div class="timeline_content">
-          <h4 class="timeline_autor">{{item.autor}}</h4>
-          <div class="timeline_time">{{item.time}}</div>
-          <div class="timeline_text" v-html="item.text"></div>
-        </div>
-      </li>
-    </transition-group>
+      <transition-group name="comment" tag="ul" class="timeline">
+        <li
+          :class="'timeline_item ' + eventColor(item.event)"
+          v-for="item in timeline"
+          :key="item.id"
+        >
+          <span :class="'timeline_color ' + eventColor(item.event)"></span>
+          <div :class="'timeline_icon ' + eventColor(item.event)">
+            <i :class="'fa ' + eventIcon(item.event)"></i>
+          </div>
+          <div class="timeline_content">
+            <h4 class="timeline_autor">{{item.autor}}</h4>
+            <div class="timeline_time">{{item.time}}</div>
+            <div class="timeline_text" v-html="item.text"></div>
+          </div>
+        </li>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -175,6 +186,36 @@ export default {
   }
 };
 </script>
-
 <style>
+.add_comment{
+  width: 100%;
+  height: 60px;
+  background-color: #eee;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+}
+.show-true{
+  height: auto;
+  transition: all .3s ease;
+}
+.show-false{
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  height: 0!important;
+}
+.fade-enter-active, .fade-leave-active {
+
+  transition: all .3s;
+}
+.fade-enter{
+transform: translateY(50px);
+opacity: 0;
+}
+
+.fade-leave-to {
+  transform: translateY(-50px);
+  opacity: 0;
+}
 </style>
