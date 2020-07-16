@@ -1,5 +1,4 @@
 const express = require('express')
-const webpush = require('web-push')
 const sequelize = require('./db')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
@@ -19,20 +18,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(__dirname));
-
-webpush.setVapidDetails('mailto:masterit15@yandex.ru', config.get('public_key'), config.get('privat_key'));
-app.post('/subscribe', (req, res) => {
-    const subscription = req.body;
-    res.status(201).json({});
-    const payload = JSON.stringify({ title: 'test' });
-  
-    console.log(subscription);
-  
-    webpush.sendNotification(subscription, payload).catch(error => {
-      console.error(error.stack);
-    });
-  });
-  
+app.use('/api/push', require('./routes/webpush.routes'))
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/claims', require('./routes/claim.routes'))
 app.use('/api/users', require('./routes/user.routes'))
