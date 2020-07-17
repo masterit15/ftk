@@ -13,7 +13,7 @@
           </slot>
         </span>
         <div class="drag-options"></div>
-        <div class="vuebar-block" v-bar>
+        <simplebar data-simplebar-auto-hide="false">
         <ul class="drag-inner-list" ref="list" :data-status="stage">
             <li
               class="drag-item"
@@ -27,7 +27,7 @@
               </slot>
             </li>
         </ul>
-        </div>
+        </simplebar>
         <div class="drag-column-footer">
           <slot :name="`footer-${stage}`"></slot>
         </div>

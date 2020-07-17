@@ -24,9 +24,9 @@ Vue.component('Kanban', vueKanban);
 import Vue2Editor from "vue2-editor";
 Vue.use(Vue2Editor);
 
-import Vuebar from 'vuebar';
-Vue.use(Vuebar);
-
+import simplebar from 'simplebar-vue';
+import 'simplebar/dist/simplebar.min.css';
+Vue.component('simplebar', simplebar);
 
 Vue.prototype.$http = axios
 if (localStorage.user) {
@@ -40,6 +40,7 @@ Vue.component('ValidationObserver', ValidationObserver);
 
 
 import './sass/main.sass'
+import './registerServiceWorker'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

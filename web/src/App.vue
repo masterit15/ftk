@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <button @click="notify()" class="btn">sdsdsd</button>
     <component :is="layout">
       <router-view></router-view>
     </component>
@@ -14,37 +13,54 @@ import { mapActions } from "vuex";
 import axios from "axios";
 export default {
   name: "App",
+  data() {
+    return {
+      publicKey:
+        "BBcqtb8w1T4nMJOZTM6RLpPXAav11mgAW4F0T6M9TGpbS7pc_UiYgNytD18BRzmu3dhMIzQrJmtvIueQAc6exxo"
+    };
+  },
   computed: {
     layout() {
       return (this.$route.meta.layout || "empty") + "-layout";
     }
   },
-  methods: {
-    async notify() {
-      let sw = await navigator.serviceWorker.ready;
-      let push = await sw.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey:
-          "BBcqtb8w1T4nMJOZTM6RLpPXAav11mgAW4F0T6M9TGpbS7pc_UiYgNytD18BRzmu3dhMIzQrJmtvIueQAc6exxo"
+  created() {
+    if ("serviceWorker" in navigator) {
+      this.send().catch(err => {
+        console.error(err);
       });
+    }
+  },
+  methods: {
+    async send() {
+      const publicVapidKey = "BBcqtb8w1T4nMJOZTM6RLpPXAav11mgAW4F0T6M9TGpbS7pc_UiYgNytD18BRzmu3dhMIzQrJmtvIueQAc6exxo"
+      const register = await navigator.serviceWorker.register("../../worker.js");
+      const subscription = await register.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: this.urlBase64ToUint8Array(publicVapidKey)
+      });
+      const body = JSON.stringify(subscription)
+      await fetch("/subscribe", {
+        method: "POST",
+        body: JSON.stringify(subscription),
+        headers: {
+          "content-type": "application/json"
+        }
+      });
+    },
+    urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, "+")
+        .replace(/_/g, "/");
 
-      console.log(sw);
-      axios
-        .post("/push/", {
-          body: JSON.stringify(succ)
-        })
-        .then(function(response) {
-          if (!response.ok) {
-            throw new Error("Bad status code from server.");
-          }
-          console.log(response);
-          return response.json();
-        })
-        .then(function(responseData) {
-          if (!(responseData.data && responseData.data.success)) {
-            throw new Error("Bad response from server.");
-          }
-        });
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
     }
   },
   components: {
@@ -53,9 +69,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.btn {
-  float: right;
-}
-</style>

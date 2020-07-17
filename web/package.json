@@ -1,26 +1,29 @@
 {
   "name": "web",
   "version": "1.0.0",
+  "private": true,
   "description": "A Vue.js project",
   "author": "masterit15 <masterit15@yandex.ru>",
-  "private": true,
   "scripts": {
+    "build": "node build/build.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
-    "build": "node build/build.js"
+    "start": "npm run dev"
   },
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
+    "compression-webpack-plugin": "^1.1.12",
     "dragula": "^3.7.2",
     "jquery": "^3.5.1",
     "material-design-icons": "^3.0.1",
-    "materialize-css": "^1.0.0-rc.2",
+    "materialize-css": "^1.0.0",
+    "register-service-worker": "^1.7.1",
+    "serviceworker-webpack-plugin": "^1.0.1",
     "simplebar-vue": "^1.5.1",
     "vee-validate": "^3.3.7",
     "vue": "^2.6.11",
-    "vue-kanban": "^1.6.2",
+    "vue-kanban": "^1.7.0",
     "vue-router": "^3.0.1",
     "vue-the-mask": "^0.11.1",
     "vue2-editor": "^2.10.2",
@@ -30,6 +33,7 @@
     "ymaps": "^0.2.1"
   },
   "devDependencies": {
+    "@vue/cli-plugin-pwa": "^4.4.6",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
@@ -55,26 +59,28 @@
     "postcss-loader": "^2.0.8",
     "postcss-url": "^7.2.1",
     "rimraf": "^2.6.0",
-    "sass-loader": "^7.3.0",
+    "sass-loader": "^7.3.1",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue-cli-plugin-bundle-service-worker": "^0.1.0",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
-    "webpack": "^3.6.0",
+    "webpack": "^4.43.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0"
-  },
-  "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
+    "webpack-merge": "^4.1.0",
+    "workbox-webpack-plugin": "^5.1.3"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  }
 }
