@@ -34,7 +34,7 @@ export default {
   methods: {
     async send() {
       const publicVapidKey = "BBcqtb8w1T4nMJOZTM6RLpPXAav11mgAW4F0T6M9TGpbS7pc_UiYgNytD18BRzmu3dhMIzQrJmtvIueQAc6exxo"
-      const register = await navigator.serviceWorker.register("../../worker.js");
+      const register = await navigator.serviceWorker.register("~/piblic/service-worker.js");
       const subscription = await register.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: this.urlBase64ToUint8Array(publicVapidKey)
