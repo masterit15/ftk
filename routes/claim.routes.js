@@ -36,7 +36,6 @@ router.get('/search', async (req, res) => {
     метод экспорта обращений
 */
 router.get('/export', auth, paginatedResults(Claim), async (req, res) => {
-    //console.log(res.paginatedResults.results)
     const exportXML = await convert.json2xml(res.paginatedResults.results, { compact: true, ignoreComment: true, spaces: 4 });
     var date = new Date();
     var datenow = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear() + '_' + date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds()
@@ -252,7 +251,6 @@ router.put('/:id', auth, async (req, res, next) => {
                 claims,
             });
         }).catch(err => {
-            console.log(err)
             return res.json({
                 success: false,
                 message: 'Не удалось обновить обрашение',
@@ -272,7 +270,7 @@ router.delete('/:id', auth, async (req, res, next) => {
             });
         })
         .catch((err) => {
-            console.log(err)
+            //console.log(err)
         });
 
     Claim.destroy({

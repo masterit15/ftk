@@ -1,17 +1,16 @@
 <template>
   <div id="address_search">
-            <label>Адрес:</label>
-            <b-form-input class="mb-md-3" v-model="addresssearch" @input="addressDropDown" ref="address"></b-form-input>
-            <transition name="addres-dd">
-            <div class="addres_dd" v-if="addresDD">
-              <b-dropdown-item 
-              v-for="(address, index) in addressArr" 
-              :key="index" 
-              @click.prevent="addresssearch = address, addresDD = false"
-              >{{address}}
-              </b-dropdown-item>
-            </div>
-            </transition>
+    <label>Адрес:</label>
+    <b-form-input class="mb-md-3" v-model="addresssearch" @input="addressDropDown" ref="address"></b-form-input>
+    <transition name="addres-dd">
+      <div class="addres_dd" v-if="addresDD">
+        <b-dropdown-item
+          v-for="(address, index) in addressArr"
+          :key="index"
+          @click.prevent="addresssearch = address, addresDD = false"
+        >{{address}}</b-dropdown-item>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -29,24 +28,25 @@ export default {
       addresDD: false,
       states: [],
       addressArr: [],
-      addresssearch: null,
+      addresssearch: null
     };
   },
   watch: {
     addresssearch(val) {
       val && val !== this.address && this.querySelections(val);
+      this.$emit("address", this.addresssearch)
     }
   },
-  mounted() {
+  created() {
     this.initializeYandexMap();
   },
   methods: {
     ...mapActions(["addClaims"]),
-    addressDropDown(){
-      if(this.$refs.address.value && this.$refs.address.value.length >= 2){
-        this.addresDD = true
-      }else{
-        this.addresDD = false
+    addressDropDown() {
+      if (this.$refs.address.value && this.$refs.address.value.length >= 2) {
+        this.addresDD = true;
+      } else {
+        this.addresDD = false;
       }
     },
     initializeYandexMap() {
@@ -59,17 +59,20 @@ export default {
           navigator.geolocation.getCurrentPosition(position => {
             let lat = position.coords.latitude;
             let lng = position.coords.longitude;
-            this.maps.geocode([lat,lng])
-            .then(res => {
-              let firstGeoObject = res.geoObjects.get(0);
-              let name = firstGeoObject.getAddressLine().length ? firstGeoObject.getAddressLine() : firstGeoObject.getAdministrativeAreas()
-              this.addresssearch = name
-              this.$emit('address', this.addresssearch)
-            })
-            .catch(err => {
-              console.log(err)
-            })
-          })
+            this.maps
+              .geocode([lat, lng])
+              .then(res => {
+                let firstGeoObject = res.geoObjects.get(0);
+                let name = firstGeoObject.getAddressLine().length
+                  ? firstGeoObject.getAddressLine()
+                  : firstGeoObject.getAdministrativeAreas();
+                this.addresssearch = name;
+                this.$emit("address", this.addresssearch);
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
         })
         .catch(error => console.log("Ошибка!", error));
     },

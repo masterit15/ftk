@@ -76,7 +76,7 @@ router.post(
 /*
     метод получения списка пользователей
 */
-router.get('/', paginatedResults(User), (req, res) => {
+router.get('/', auth, paginatedResults(User), (req, res) => {
   return res.json({
     success: true,
     user: res.paginatedResults
@@ -85,7 +85,7 @@ router.get('/', paginatedResults(User), (req, res) => {
 /*
     метод получения пользователя по ID
 */
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   let id = req.params.id;
   User.findOne({ where: { id } })
     .then(user => {
@@ -108,7 +108,7 @@ router.get('/:id', async (req, res) => {
 /*
     метод обновления пользователя по ID
 */
-router.put('/edit', async (req, res) => {
+router.put('/edit', auth, async (req, res) => {
   const { login, email, username, avatar, permission, password } = req.body
   let id = req.body.id
   // если пароль не менялся
@@ -221,7 +221,6 @@ function paginatedResults(model) {
     const endIndex = page * limit
     const results = {}
     const total = await model.findAll({ raw: true })
-    console.log(search)
     results.pagin = {
       currentPage: page,
       total: total.length,

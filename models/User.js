@@ -19,6 +19,7 @@ const User = sequelize.define("user", {
     // permission: {type: Sequelize.ENUM, values:['Администратор','Сотрудник'], defaultValue: 'Сотрудник'},
     username: { type: Sequelize.STRING, allowNull: false},
     password: { type: Sequelize.STRING, allowNull: false},
+    subscription: { type: Sequelize.JSON, allowNull: true}
   })
 
   User.hasMany(Timeline, { onDelete: "cascade"});

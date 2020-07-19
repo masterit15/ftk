@@ -22,12 +22,18 @@ export default {
     AppFooter
   },
   created() {
-    setInterval(() => {
-      this.refreshToken()
-    }, 840000);
+    this.subscribeUser()
   },
   methods: {
-    ...mapActions(['refreshToken'])
+    ...mapActions(['refreshToken', 'subscribeUser'])
   },
 };
 </script>
+<style lang="sass">
+.slide-fade-enter-active
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1)
+.slide-fade-enter,
+.slide-fade-leave-to
+  transform: translateX(50px)
+  opacity: 0
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div id="fileuploader" :class="'uploader-'+uploader">
     <div class="form_row__photo-previews">
-      <input type="file" name="files[]" multiple id="js-photo-upload" />
+      <input type="file" name="files[]" multiple class="js-photo-upload" />
       <div class="add_photo-content">
         <div class="add_photo-item"></div>
         <ul id="uploadImagesList">
@@ -47,7 +47,7 @@ export default {
       let that = this;
       $(`.uploader-${uploader}`).each(function() {
         let addButton = $(this).find(".add_photo-item");
-        let addInput = $(this).find("#js-photo-upload");
+        let addInput = $(this).find(".js-photo-upload");
         let imgList = $(this).find("#uploadImagesList");
         $(addButton).on("click", function() {
           $(addInput).trigger("click");

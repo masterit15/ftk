@@ -4,7 +4,8 @@ const sequelize = new Sequelize("ftk", "root", "root", {
   host: "127.0.0.1",
   define: {
     timestamps: false
-  }
+  },
+  logging: false
 });
 // sequelize.sync().then(result=>{
 //   console.log(result);

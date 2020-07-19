@@ -33,12 +33,13 @@ if (process.env.NODE_ENV === 'production') {
     })
 }
 
-const PORT = config.get('port') || 5000
+const PORT = config.get('port') || 3000
+const HostName = config.get('host') || '127.0.0.1'
 
 async function start() {
     try {
         await sequelize.authenticate();
-        server.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
+        server.listen(PORT, HostName, () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);

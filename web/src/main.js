@@ -14,6 +14,9 @@ import './vee-validate'
 import messages from './plugins/messages'
 Vue.use(messages)
 
+import dateFilter from './plugins/data.filter'
+Vue.filter('date', dateFilter)
+
 Vue.config.productionTip = false
 
 // import vueKanban from 'vue-kanban'
@@ -24,11 +27,11 @@ Vue.component('Kanban', vueKanban);
 import Vue2Editor from "vue2-editor";
 Vue.use(Vue2Editor);
 
-import simplebar from 'simplebar-vue';
-import 'simplebar/dist/simplebar.min.css';
-Vue.component('simplebar', simplebar);
+import Vuebar from 'vuebar';
+Vue.use(Vuebar);
 
 Vue.prototype.$http = axios
+
 if (localStorage.user) {
   const tokenData = JSON.parse(localStorage.user)
   Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${tokenData.accessToken}`
@@ -40,7 +43,6 @@ Vue.component('ValidationObserver', ValidationObserver);
 
 
 import './sass/main.sass'
-import './registerServiceWorker'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

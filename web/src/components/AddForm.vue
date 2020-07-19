@@ -6,7 +6,7 @@
       </div>
       <b-row>
         <b-col xl="6">
-          <div class="vuebar-block" v-bar>
+          <div v-bar><div>
             <b-form @submit.prevent="onSubmit">
               <b-form-group>
                 <label>Статус заявки:</label>
@@ -21,7 +21,7 @@
                       :value-as-date="true"
                       :date-format-options="{ day: '2-digit', month: '2-digit', year: 'numeric' }"
                       v-model="credate"
-                      cre
+                      disabled="disabled"
                       :value="credate"
                       type="date"
                     ></b-form-datepicker>
@@ -33,6 +33,7 @@
                       v-model="cretime"
                       :value="cretime"
                       :hour12="false"
+                      disabled="disabled"
                       show-seconds
                     ></b-form-timepicker>
                   </b-col>
@@ -59,25 +60,28 @@
                       class="mb-md-3"
                       v-model="contime"
                       :value="contime"
+                      disabled="disabled"
                       :hour12="false"
                       show-seconds
                     ></b-form-timepicker>
                   </b-col>
                 </b-row>
+                <DepartamentSearch v-on:respons="getDepartament"/>
                 <ResponsibleSearch v-on:respons="getResponsoble" />
                 <AddressSearch v-on:address="getAddress" />
-                <FileUploader uploader="1" />
+                <FileUploader uploader="1" v-on:files="getFiles"/>
                 <label>Текст заявки:</label>
                 <vue-editor
                   class="mb-md-3"
                   v-model="claim.description"
                   :editor-toolbar="customToolbar"
                 />
+                <FileUploader uploader="3" v-on:files="getAnswerFiles"/>
               </b-form-group>
               <b-button type="submit" variant="success">Сохранить</b-button>
               <b-button type="reset" variant="warning">Обновить</b-button>
             </b-form>
-          </div>
+          </div></div>
         </b-col>
         <b-col xl="6">
           <Timelines />
@@ -92,6 +96,7 @@ import { mapGetters, mapActions } from "vuex";
 import { mask } from "vue-the-mask";
 import AddressSearch from "../components/addform/AddressSearch";
 import ResponsibleSearch from "../components/addform/ResponsibleSearch";
+import DepartamentSearch from "../components/addform/DepartamentSearch";
 import FileUploader from "../components/addform/FileUploader";
 import Timelines from "../components/addform/Timelines";
 
@@ -104,6 +109,7 @@ export default {
     AddressSearch,
     FileUploader,
     Timelines,
+    DepartamentSearch,
     ResponsibleSearch
   },
   props: {
@@ -125,8 +131,13 @@ export default {
         new Date().getMinutes() +
         ":" +
         new Date().getSeconds(),
-      condate: "",
-      contime: "",
+      condate: '',
+      contime: 
+        new Date().getHours() +
+        ":" +
+        new Date().getMinutes() +
+        ":" +
+        new Date().getSeconds(),
       customToolbar: [
         // [{ header: [false, 1, 2, 3, 4, 5, 6] }],
         ["bold", "italic", "underline"], // toggled buttons
@@ -149,7 +160,9 @@ export default {
         { value: "Worked", text: "В работе" },
         { value: "Done", text: "Обработанные" }
       ],
-      status: "New"
+      status: "New",
+      files: [],
+      answerFiles: []
     };
   },
   watch: {
@@ -163,16 +176,16 @@ export default {
     claim() {
       let claim = {
         status: this.langRuss(this.status),
-        address: "",
+        address: '',
         creatorId: this.user.userId,
         filesPath: {},
-        description: "",
+        description: '',
         answerFiles: {},
-        controlDate: "",
-        creationDate: this.date,
+        controlDate: this.condate && this.contime ? Date(`${this.condate}T${this.contime}Z`) : '',
+        creationDate: Date(`${this.credate}T${this.cretime}Z`),
         departmentId: null,
-        responsible: "",
-        answerDescription: ""
+        responsibleId: null,
+        answerDescription: ''
       };
       if (!this.formData) {
         return claim;
@@ -186,19 +199,40 @@ export default {
     body.style.width = "100%";
   },
   methods: {
-    ...mapActions(["addClaims"]),
-    getResponsoble(responsible) {
-      this.claim.responsible = responsible;
+    ...mapActions(['addClaims', 'uploadFiles']),
+    getResponsoble(id) {
+      this.claim.responsibleId = id;
+    },
+    getDepartament(id) {
+      this.claim.responsibleId = id;
     },
     getAddress(address) {
       this.claim.address = address;
     },
-    onSubmit() {
+    getFiles(files){
+      this.files.push(files)
+    },
+    getAnswerFiles(files){
+      this.answerFiles.push(files)
+    },
+    async uploaderFiles(files){
+      if(files.length > 0){
+        let res = await this.uploadFiles(files)
+        return res
+      }
+      return
+    },
+    async onSubmit() {
       this.overlay = true;
-      // this.addClaims(this.claim);
+      this.claim.filesPath = await this.uploaderFiles(this.files)
+      this.claim.answerFiles = await this.uploaderFiles(this.answerFiles)
+
+      this.addClaims(this.claim)
       setTimeout(() => {
         this.overlay = false;
       }, 5000);
+
+
     },
     langRuss(status) {
       switch (status) {

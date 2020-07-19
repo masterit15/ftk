@@ -11,23 +11,23 @@ export default({
   },
   actions: {
     async addClaims({dispatch}, data){
-      let res = await axios.post('claims/', data)
+      let res = await axios.post('/api/claims/', data)
       console.log(res)
       dispatch('getClaims')
-      return res
+      return res.data
     },
     async putClaims({dispatch}, data){
-      let res = await axios.put('claims/', data)
+      let res = await axios.put('/api/claims/', data)
       dispatch('getClaims')
       return res
     },
     async deleteClaims({dispatch}, data){
-      let res = await axios.delete('claims/', data)
+      let res = await axios.delete('/api/claims/', data)
       dispatch('getClaims')
       return res
     },
     async getClaims({commit}, data){
-      let res = await axios.get('claims/', {
+      let res = await axios.get('/api/claims/', {
         params: data
       })
       let claims = await res.data.claims.results

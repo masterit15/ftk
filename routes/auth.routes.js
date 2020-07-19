@@ -109,7 +109,8 @@ router.post(
                 return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
             }
             const accessToken = generateAccessToken(user.id)
-            const refreshToken = jwt.sign(user.id, config.get('jwtRefreshSecret'))
+            // const refreshToken = jwt.sign(user.id, config.get('jwtRefreshSecret'))
+            const refreshToken = generateRefreshToken(user.id)
             const Rtoken = await RefToken.create({ refreshToken })
             res.json({
                 success: true,
@@ -118,6 +119,7 @@ router.post(
                 login,
                 userId: user.id,
                 username: user.username,
+                subscribe: user.subscription.keys
                 //avatar: user.avatar
             })
 
@@ -130,12 +132,24 @@ router.post(
 router.post('/token', async (req, res) => {
     const refreshToken = req.body.token
     if (refreshToken == null) return res.sendStatus(401)
+    const decoded = jwt.verify(refreshToken, config.get('jwtRefreshSecret'), async (err, user) => {
+        if (err.message === 'jwt expired'){
+            await RefToken.destroy({
+                where: { refreshToken }
+            })
+        return res.status(401).json({ message: 'Нет авторизации или закончилась сессия' })
+        }
+    })
+    if (!decoded) {
+        return res.status(401).json({ message: 'Нет авторизации или закончилась сессия' })
+    }
     await RefToken.findOne({ where: { refreshToken } })
         .then(rToken => {
             jwt.verify(rToken.dataValues.refreshToken, config.get('jwtRefreshSecret'), (err, user) => {
                 if (err) return res.sendStatus(403)
                 const accessToken = generateAccessToken(user)
                 res.json({
+                    success: true,
                     accessToken,
                     refreshToken,
                 })
@@ -158,5 +172,7 @@ router.delete('/logout', async (req, res) => {
 function generateAccessToken(user) {
     return jwt.sign({ userId: user }, config.get('jwtSecret'), { expiresIn: '15m' })
 }
-
+function generateRefreshToken(user) {
+    return jwt.sign({ userId: user }, config.get('jwtRefreshSecret'), { expiresIn: '20m' })
+}
 module.exports = router

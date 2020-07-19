@@ -9,59 +9,55 @@
 <script>
 import EmptyLayout from "./layouts/Emptylayout.vue";
 import MainLayout from "./layouts/Mainlayout.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import axios from "axios";
+import { respond } from "xstate/lib/actions";
 export default {
   name: "App",
   data() {
     return {
-      publicKey:
-        "BBcqtb8w1T4nMJOZTM6RLpPXAav11mgAW4F0T6M9TGpbS7pc_UiYgNytD18BRzmu3dhMIzQrJmtvIueQAc6exxo"
     };
   },
   computed: {
+    ...mapGetters(['user']),
     layout() {
       return (this.$route.meta.layout || "empty") + "-layout";
     }
   },
-  created() {
-    if ("serviceWorker" in navigator) {
-      this.send().catch(err => {
-        console.error(err);
-      });
-    }
+  async created() {
+    // запрос-перехватчик
+    axios.interceptors.request.use(
+      function(response) {
+        //console.log("Сделать что-то перед отправкой запроса", response);
+        return response;
+      },
+      function(error) {
+        //console.log("Сделать что-то с ошибкой запроса ", error);
+        return Promise.reject(error);
+      }
+    );
+    // ответ перехватчик
+    axios.interceptors.response.use(async response =>{
+        if (response.data.token === false) {
+          let res = await this.refreshToken()
+          if(!res){
+            await this.logout()
+            router.push('/login')
+          }
+        }
+        //console.log("Делать что-то с ответными данными", response);
+        return response;
+      }, async (error) =>{
+        //console.log("Делать что-то с ответными данными ошибки", error);
+            await this.logout()
+            this.$router.push('/login')
+        return Promise.reject(error);
+      }
+    );
+      
   },
   methods: {
-    async send() {
-      const publicVapidKey = "BBcqtb8w1T4nMJOZTM6RLpPXAav11mgAW4F0T6M9TGpbS7pc_UiYgNytD18BRzmu3dhMIzQrJmtvIueQAc6exxo"
-      const register = await navigator.serviceWorker.register("~/piblic/service-worker.js");
-      const subscription = await register.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(publicVapidKey)
-      });
-      const body = JSON.stringify(subscription)
-      await fetch("/subscribe", {
-        method: "POST",
-        body: JSON.stringify(subscription),
-        headers: {
-          "content-type": "application/json"
-        }
-      });
-    },
-    urlBase64ToUint8Array(base64String) {
-      const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = (base64String + padding)
-        .replace(/\-/g, "+")
-        .replace(/_/g, "/");
-
-      const rawData = window.atob(base64);
-      const outputArray = new Uint8Array(rawData.length);
-
-      for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-      }
-      return outputArray;
-    }
+    ...mapActions(['refreshToken', 'logout']),
   },
   components: {
     EmptyLayout,

@@ -10,11 +10,14 @@ export default {
 name: 'users',
 data(){
   return {
-
+    getParams: {
+      page: 1,
+      limit: 6,
+    }
   }
 },
 created() {
-  this.getUsers()
+  this.getUsers(this.getParams)
 },
 computed: {
   ...mapGetters(['users'])

@@ -223,20 +223,20 @@ input, button
   transition: transform 1.2s ease-in-out
   transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out
 
-h2
-  width: 100%
-  font-size: 30px
-  text-align: center
+  h2
+    width: 100%
+    font-size: 30px
+    text-align: center
 
-button
-  display: block
-  margin: 0 auto
-  width: 260px
-  height: 36px
-  border-radius: 30px
-  color: #fff
-  font-size: 15px
-  cursor: pointer
+  button
+    display: block
+    margin: 0 auto
+    width: 260px
+    height: 36px
+    border-radius: 30px
+    color: #fff
+    font-size: 15px
+    cursor: pointer
 
 .submit
   margin-top: 40px

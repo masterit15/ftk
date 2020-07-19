@@ -1,44 +1,50 @@
 <template>
   <div id="timelines">
-    
-    <div class="editor">
+    <div v-bar="{resizeRefresh: true}">
+      <div ref="scroll">
+    <div class="editor" ref="editor">
       <div class="editor_icon">
         <i class="fa fa-comment"></i>
       </div>
-        <input placeholder="Добавить комментарий" :class="'add_comment show-'+!commentEditor"  @click="commentEditor = !commentEditor"/>
+      <input
+        placeholder="Добавить комментарий"
+        :class="'add_comment show-'+!commentEditor"
+        @click="commentEditor = !commentEditor"
+      />
       <transition name="fade">
         <div :class="'show-'+commentEditor">
-          
-      <vue-editor
-        placeholder="Текст комментария"
-        v-model="timelineContent"
-        :editor-toolbar="customToolbar"
-      />
-      <FileUploader uploader="2" />
-      <button @click="addEvents" class="btn btn-outline-success">Добавить</button>
-      <button @click="commentEditor = !commentEditor, timelineContent = ''" class="btn btn-outline-warning">Отмена</button>
-      </div>
+          <vue-editor
+            placeholder="Текст комментария"
+            v-model="timelineContent"
+            :editor-toolbar="customToolbar"
+          />
+          <FileUploader uploader="2" />
+          <button @click="addEvents" class="btn btn-outline-success">Добавить</button>
+          <button
+            @click="commentEditor = !commentEditor, timelineContent = ''"
+            class="btn btn-outline-warning"
+          >Отмена</button>
+        </div>
       </transition>
     </div>
-    
-    <div class="vuebar-block" v-bar>
-      <transition-group name="comment" tag="ul" class="timeline">
-        <li
-          :class="'timeline_item ' + eventColor(item.event)"
-          v-for="item in timeline"
-          :key="item.id"
-        >
-          <span :class="'timeline_color ' + eventColor(item.event)"></span>
-          <div :class="'timeline_icon ' + eventColor(item.event)">
-            <i :class="'fa ' + eventIcon(item.event)"></i>
-          </div>
-          <div class="timeline_content">
-            <h4 class="timeline_autor">{{item.autor}}</h4>
-            <div class="timeline_time">{{item.time}}</div>
-            <div class="timeline_text" v-html="item.text"></div>
-          </div>
-        </li>
-      </transition-group>
+        <transition-group name="comment" tag="ul" class="timeline">
+          <li
+            :class="'timeline_item ' + eventColor(item.event)"
+            v-for="item in timeline"
+            :key="item.id"
+          >
+            <span :class="'timeline_color ' + eventColor(item.event)"></span>
+            <div :class="'timeline_icon ' + eventColor(item.event)">
+              <i :class="'fa ' + eventIcon(item.event)"></i>
+            </div>
+            <div class="timeline_content">
+              <h4 class="timeline_autor">{{item.autor}}</h4>
+              <div class="timeline_time">{{item.time | date('datetime')}}</div>
+              <div class="timeline_text" v-html="item.text"></div>
+            </div>
+          </li>
+        </transition-group>
+      </div>
     </div>
   </div>
 </template>
@@ -54,37 +60,7 @@ export default {
       settings: {
         maxScrollbarLength: 60
       },
-      events: [
-        {
-          id: 1,
-          event: "created",
-          autor: "admin",
-          text: "test",
-          time: "03.05.2020 в 11:22"
-        },
-        {
-          id: 2,
-          event: "changestatus",
-          autor: "admin",
-          text: "test",
-          time: "03.05.2020 в 11:22"
-        },
-        {
-          id: 3,
-          event: "edited",
-          autor: "admin",
-          text: "test",
-          time: "03.05.2020 в 11:22"
-        },
-        {
-          id: 4,
-          event: "comment",
-          autor: "admin",
-          text:
-            "Далеко-далеко за словесными горами в стране, гласных и согласных живут рыбные тексты. Лучше великий маленькая грустный, запятых языкового своего если, обеспечивает вдали правилами своих рот предложения, его свой однажды? Использовало, жаренные имени!",
-          time: "03.05.2020 в 11:22"
-        }
-      ],
+      events: [],
       commentEditor: false,
       timelineContent: "",
       customToolbar: [
@@ -106,22 +82,39 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["timelines"]),
+    ...mapGetters(['user','timelines']),
     timeline() {
       if (this.timelines !== undefined) {
         return this.events.slice().reverse();
       }
     }
   },
+  mounted() {
+    let commentContent = this.$refs.scroll
+    let commentEditor = this.$refs.editor
+    commentContent.addEventListener('scroll', function() {
+      if(this.scrollTop >= 10){
+        commentEditor.style.width = `${this.clientWidth-130}px`
+        commentEditor.classList.add("fixed")
+      }else{
+        commentEditor.classList.remove("fixed")
+      }
+    });
+  },  
   methods: {
     ...mapActions(["getTimelines"]),
+     editorFixed(){
+      let timelines = document.getElementById('timelines')
+      // let top = timelines.getElementsByClassName('vb-content')
+      console.log(timelines)
+    },
     addEvents() {
       let event = {
         id: this.events.length + 1,
         event: "comment",
-        autor: "admin",
+        autor: this.user.username,
         text: this.timelineContent,
-        time: "03.05.2020 в 11:22"
+        time: new Date()
       };
       this.events.push(event);
     },
@@ -186,36 +179,43 @@ export default {
   }
 };
 </script>
-<style>
-.add_comment{
-  width: 100%;
-  height: 60px;
-  background-color: #eee;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-}
-.show-true{
-  height: auto;
-  transition: all .3s ease;
-}
-.show-false{
-  opacity: 0;
-  visibility: hidden;
-  overflow: hidden;
-  height: 0!important;
-}
-.fade-enter-active, .fade-leave-active {
-
-  transition: all .3s;
-}
-.fade-enter{
-transform: translateY(50px);
-opacity: 0;
-}
-
-.fade-leave-to {
-  transform: translateY(-50px);
-  opacity: 0;
-}
+<style lang="sass">
+#timelines
+  .vb-content
+    &:before
+      content: ''
+      position: absolute
+      left: 0
+      bottom: 0
+      width: 100%
+      height: 50px
+      background-image: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)
+      z-index: 10
+.timeline
+  height: 80vh
+  position: relative
+.add_comment
+  width: 100%
+  height: 60px
+  background-color: #eee
+  border: none
+  border-radius: 5px
+  padding: 10px
+.show-true
+  height: auto
+  transition: all 0.3s ease
+.show-false
+  opacity: 0
+  visibility: hidden
+  overflow: hidden
+  height: 0 !important
+.fade-enter-active,
+.fade-leave-active 
+  transition: all 0.3s
+.fade-enter
+  transform: translateY(50px)
+  opacity: 0
+.fade-leave-to
+  transform: translateY(-50px)
+  opacity: 0
 </style>

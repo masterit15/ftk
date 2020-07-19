@@ -14,7 +14,7 @@ const Claim = sequelize.define("claim", {
   answerFiles: { type: Sequelize.JSON },
   description: {type: Sequelize.TEXT, allowNull: false},
   status: { type: Sequelize.ENUM, values: ['Не обработанные', 'В работе', 'Обработанные'], defaultValue: 'Не обработанные', allowNull: false},
-  address: {type: Sequelize.JSON, allowNull: false},
+  address: {type: Sequelize.STRING, allowNull: false},
   creationDate: {
     type: Sequelize.DATE, 
     allowNull: false,

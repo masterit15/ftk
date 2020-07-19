@@ -11,25 +11,28 @@ export default({
   },
   actions: {
     async authorization({commit}, data){
-      let res = await axios.post('/auth/login', data)
+      let res = await axios.post('/api/auth/login', data)
       localStorage.setItem('user', JSON.stringify(res.data))
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access_token}`
+      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
       commit('set_user', res.data)
       return res.data.success
     },
-    async register({dispatch}, data){
-      let res = await axios.post('/auth/register', data)
+    async register({}, data){
+      let res = await axios.post('/api/auth/register', data)
       return res.data
     },
     async refreshToken({}){
       let user = await JSON.parse(localStorage.getItem('user'))
-      let res = await axios.post('/auth/token', { token: user.refreshToken})
+      let res = await axios.post('/api/auth/token', { token: user.refreshToken})
       user.accessToken = res.data.accessToken
       user.refreshToken = res.data.refreshToken
+      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
       localStorage.setItem('user', JSON.stringify(user))
+      return res.data.success
     },
-    async logout({commit}, data){
-      let res = await axios.delete('/auth/logout', {params:{token: data}})
+    async logout({}){
+      let user = await JSON.parse(localStorage.getItem('user'))
+      let res = await axios.delete('/api/auth/logout', {params:{token: user.refreshToken}})
       if(res.data.success){
         localStorage.removeItem('user')
         delete axios.defaults.headers.common['Authorization']

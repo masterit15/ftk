@@ -7,7 +7,7 @@
               <b-dropdown-item 
               v-for="(user, index) in users" 
               :key="index" 
-              @click.prevent="selectRespons(user.username),responsibleDD = false"
+              @click.prevent="selectRespons(user.username, user.id),responsibleDD = false"
               >{{user.username}}
               </b-dropdown-item>
             </div>
@@ -49,9 +49,9 @@ export default {
         this.responsibleDD = false
       }
     },
-    selectRespons(name){
+    selectRespons(name, id){
       this.respons = name
-      this.$emit('respons', name )
+      this.$emit('respons', id)
     }
   },
 }
