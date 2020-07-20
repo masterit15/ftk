@@ -52,7 +52,6 @@ export default ({
       })
       res.json().then(res =>{
         user.subscribe = res.subscribe
-        console.log(user)
         localStorage.user = JSON.stringify(user)
       }).catch(err => {
         console.log(err)

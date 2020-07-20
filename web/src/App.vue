@@ -45,13 +45,15 @@ export default {
             router.push('/login')
           }
         }
-        //console.log("Делать что-то с ответными данными", response);
         return response;
       }, async (error) =>{
-        //console.log("Делать что-то с ответными данными ошибки", error);
+        if(error.response.status === 401) {
+         alert("Ваша сессия закончилась, пройдите повторную авторизацию");
             await this.logout()
             this.$router.push('/login')
-        return Promise.reject(error);
+        }
+        //console.log("Делать что-то с ответными данными ошибки", error.response.status);
+        //return Promise.reject(error);
       }
     );
       
