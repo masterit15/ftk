@@ -14,7 +14,8 @@
 import AppHeader from "../components/Header";
 import AppSidebar from "../components/Sidebar";
 import AppFooter from "../components/Footer";
-import {mapActions} from 'vuex'
+import { mapActions, getters, mapGetters } from "vuex";
+import axios from 'axios'
 export default {
   components: {
     AppHeader,
@@ -22,11 +23,44 @@ export default {
     AppFooter
   },
   created() {
-    this.subscribeUser()
+    // запрос-перехватчик
+    axios.interceptors.request.use(
+      function(response) {
+        //console.log("Сделать что-то перед отправкой запроса", response);
+        return response;
+      },
+      function(error) {
+        //console.log("Сделать что-то с ошибкой запроса ", error);
+        return Promise.reject(error);
+      }
+    );
+    // ответ перехватчик
+    axios.interceptors.response.use(async response =>{
+        if (response.data.token === false) {
+          let res = await this.refreshToken()
+          if(!res){
+            await this.logout()
+            router.push('/login')
+          }
+        }
+        return response;
+      }, async (error) =>{
+        if(error.response.status === 401) {
+         alert("Ваша сессия закончилась, пройдите повторную авторизацию");
+            await this.logout()
+            this.$router.push('/login')
+        }
+        //console.log("Делать что-то с ответными данными ошибки", error.response.status);
+        //return Promise.reject(error);
+      }
+    );
+  },
+  computed: {
+    ...mapGetters(['user'])
   },
   methods: {
-    ...mapActions(['refreshToken', 'subscribeUser'])
-  },
+    ...mapActions(['refreshToken', 'logout'])
+  }
 };
 </script>
 <style lang="sass">

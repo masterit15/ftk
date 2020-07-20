@@ -112,6 +112,7 @@ router.post(
             // const refreshToken = jwt.sign(user.id, config.get('jwtRefreshSecret'))
             const refreshToken = generateRefreshToken(user.id)
             const Rtoken = await RefToken.create({ refreshToken })
+            console.log(user.subscription)
             res.json({
                 success: true,
                 accessToken,
@@ -119,7 +120,7 @@ router.post(
                 login,
                 userId: user.id,
                 username: user.username,
-                subscribe: user.subscription.keys
+                subscription: user.subscription
                 //avatar: user.avatar
             })
 
