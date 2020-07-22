@@ -10,7 +10,7 @@
         <span class="drag-column-header">
           <slot :name="stage">
             <h2 @click.prevent="edit = stage">{{ stage }}</h2>
-            
+            <chrome-picker :value="color" @input="updateValue"></chrome-picker>
             <input v-if="edit == stage" v-model="status" type="text" name="status" @input="editStatus(index)">
             <div class="add_btn" @click.prevent="addStatus()">
               <i class="fa fa-plus"></i>
