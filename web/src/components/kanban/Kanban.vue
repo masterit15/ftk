@@ -2,24 +2,20 @@
   <div class="drag-container">
     <ul class="drag-list">
       <li
-        v-for="(stage, index) in stages"
+        v-for="stage in stages"
         class="drag-column"
         :class="{['drag-column-' + stage]: true}"
-        :key="index"
+        :key="stage"
       >
         <span class="drag-column-header">
           <slot :name="stage">
-            <h2 @click.prevent="edit = stage">{{ stage }}</h2>
-            <chrome-picker :value="color" @input="updateValue"></chrome-picker>
-            <input v-if="edit == stage" v-model="status" type="text" name="status" @input="editStatus(index)">
-            <div class="add_btn" @click.prevent="addStatus()">
-              <i class="fa fa-plus"></i>
-            </div>
+            <h2>{{ stage }}</h2>
           </slot>
         </span>
         <div class="drag-options"></div>
         <div v-bar><div>
         <ul class="drag-inner-list" ref="list" :data-status="stage">
+          <!-- <transition-group name="comment" tag="ul" class="drag-inner-list" ref="list" :data-status="stage"> -->
             <li
               class="drag-item"
               v-for="block in getBlocks(stage)"
@@ -31,6 +27,7 @@
                 <div>{{ block.id }}</div>
               </slot>
             </li>
+          <!-- </transition-group> -->
         </ul>
         </div></div>
         <div class="drag-column-footer">
@@ -42,7 +39,6 @@
 </template>
 
 <script>
-import {Chrome} from 'vue-color'
 import dragula from "dragula";
 import { Machine } from "xstate";
 export default {
@@ -67,14 +63,8 @@ export default {
   },
   data() {
     return {
-      edit: '',
-      status: '',
-      color: '',
       machine: null
     };
-  },
-  components: {
-    'chrome-picker': Chrome,
   },
   computed: {
     localBlocks() {
@@ -82,16 +72,6 @@ export default {
     }
   },
   methods: {
-    updateValue(){
-
-    },
-    editStatus(index){
-      console.log(this.stages[index])
-      this.stages[index] = this.status
-    },
-    addStatus(){
-
-    },
     getBlocks(status) {
       return this.localBlocks.filter(block => block.status === status);
     },
