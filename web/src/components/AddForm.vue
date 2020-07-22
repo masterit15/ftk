@@ -69,14 +69,24 @@
                 <DepartamentSearch v-on:respons="getDepartament"/>
                 <ResponsibleSearch v-on:respons="getResponsoble" />
                 <AddressSearch v-on:address="getAddress" />
-                <FileUploader uploader="1" v-on:files="getFiles"/>
                 <label>Текст заявки:</label>
                 <vue-editor
                   class="mb-md-3"
                   v-model="claim.description"
                   :editor-toolbar="customToolbar"
                 />
+                <label>Файлы к заявке:</label>
+                <FileUploader uploader="1" v-on:files="getFiles"/>
+                <div id="answer" v-if="formData">
+                <label>Ответ к заявке:</label>
+                <vue-editor
+                  class="mb-md-3"
+                  v-model="claim.description"
+                  :editor-toolbar="customToolbar"
+                />
+                <label>Файлы ответ к заявке:</label>
                 <FileUploader uploader="3" v-on:files="getAnswerFiles"/>
+                </div>
               </b-form-group>
               <b-button type="submit" variant="success">Сохранить</b-button>
               <b-button type="reset" variant="warning">Обновить</b-button>
@@ -174,15 +184,16 @@ export default {
   computed: {
     ...mapGetters(["user"]),
     claim() {
+      let control = new Date(this.condate).getFullYear() + "-" + new Date(this.condate).getMonth() + "-" + new Date(this.condate).getDate()
       let claim = {
         status: this.langRuss(this.status),
         address: '',
-        creatorId: this.user.userId,
+        userId: this.user.userId,
         filesPath: {},
         description: '',
         answerFiles: {},
-        controlDate: this.condate && this.contime ? Date(`${this.condate}T${this.contime}Z`) : '',
-        creationDate: Date(`${this.credate}T${this.cretime}Z`),
+        controlDate: `${control}T${this.contime}Z`,
+        creationDate: `${this.credate}T${this.cretime}Z`,
         departmentId: null,
         responsibleId: null,
         answerDescription: ''
@@ -201,6 +212,7 @@ export default {
   methods: {
     ...mapActions(['addClaims', 'uploadFiles']),
     getResponsoble(id) {
+      console.log(id)
       this.claim.responsibleId = id;
     },
     getDepartament(id) {

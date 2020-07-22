@@ -43,8 +43,11 @@ export default {
           search: this.$refs.responsible.value,
         }
         let res = await this.getUsers(params)
+
       if(this.$refs.responsible.value && this.$refs.responsible.value.length >= 2){
+        
         this.responsibleDD = true
+        console.log(this.responsibleDD)
       }else{
         this.responsibleDD = false
       }
@@ -56,7 +59,3 @@ export default {
   },
 }
 </script>
-
-<style>
-
-</style>

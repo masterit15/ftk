@@ -36,6 +36,7 @@ export default {
     );
     // ответ перехватчик
     axios.interceptors.response.use(async response =>{
+      console.log(response.data)
         if (response.data.token === false) {
           let res = await this.refreshToken()
           if(!res){
@@ -46,7 +47,7 @@ export default {
         return response;
       }, async (error) =>{
         if(error.response.status === 401) {
-         alert("Ваша сессия закончилась, пройдите повторную авторизацию");
+        //  alert("Ваша сессия закончилась, пройдите повторную авторизацию");
             await this.logout()
             this.$router.push('/login')
         }

@@ -10,7 +10,11 @@ export default ({
         formData.append('files', file)
       });
       let res = await axios.post('/api/upload', formData)
-      return res.data.filedata.path
+      let filePath = []
+      res.data.filedata.forEach(file => {
+        filePath.push(file.path)
+      });
+      return filePath
     },
   }
 })

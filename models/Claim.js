@@ -9,7 +9,6 @@ const Claim = sequelize.define("claim", {
     primaryKey: true,
     allowNull: false
   },
-  creatorId: {type: Sequelize.INTEGER, allowNull: false},
   filesPath: {type: Sequelize.JSON},
   answerFiles: { type: Sequelize.JSON },
   description: {type: Sequelize.TEXT, allowNull: false},

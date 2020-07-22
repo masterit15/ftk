@@ -23,6 +23,7 @@
     "simplebar-vue": "^1.5.1",
     "vee-validate": "^3.3.7",
     "vue": "^2.6.11",
+    "vue-color": "^2.7.1",
     "vue-kanban": "^1.7.0",
     "vue-router": "^3.0.1",
     "vue-the-mask": "^0.11.1",

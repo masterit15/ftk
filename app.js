@@ -21,6 +21,7 @@ app.use(express.static(__dirname));
 app.use('/api/subscribe', require('./routes/webpush.routes'))
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/claims', require('./routes/claim.routes'))
+app.use('/api/status', require('./routes/status.routes'))
 app.use('/api/users', require('./routes/user.routes'))
 app.use('/api/chat', require('./routes/chat.routes'))
 app.use('/api/upload', require('./routes/upload.routes'))

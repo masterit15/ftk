@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
 
   } catch (e) {
     if (e.message === 'jwt expired'){
-      res.status(401).json({
+      res.json({
         success: false,
         message: 'Ваш токен истек в ' + e.expiredAt,
         token: false

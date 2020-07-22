@@ -68,8 +68,9 @@ router.post('/', auth, async (req, res, next) => {
     const {
         status,
         timeline,
-        creatorId,
+        userId,
         filesPath,
+        address,
         description,
         answerFiles,
         controlDate,
@@ -81,12 +82,13 @@ router.post('/', auth, async (req, res, next) => {
     Claim.create({
         status,
         timeline,
-        creatorId,
+        userId,
         filesPath,
+        address,
         description,
         answerFiles,
-        controlDate,
-        creationDate,
+        controlDate: Date(controlDate),
+        creationDate: Date(creationDate),
         departmentId,
         responsibleId,
         answerDescription,
@@ -218,7 +220,7 @@ router.put('/:id', auth, async (req, res, next) => {
     const {
         status,
         timeline,
-        creatorId,
+        userId,
         filesPath,
         description,
         answerFiles,
@@ -232,7 +234,7 @@ router.put('/:id', auth, async (req, res, next) => {
     Claim.update({
         status,
         timeline,
-        creatorId,
+        userId,
         filesPath,
         description,
         answerFiles,
@@ -495,6 +497,7 @@ function paginatedResults(model) {
                         })
                     res.paginatedResults = results
                 } else {
+                    
                     results.results = await model.findAll({
                         order: [
                             ["id", 'DESC']
@@ -502,10 +505,19 @@ function paginatedResults(model) {
                         offset: (startIndex),
                         limit: limit,
                     })
+                    console.log(results.results)
                     res.paginatedResults = results
                 }
             }
-
+            results.results = await model.findAll({
+                order: [
+                    ["id", 'DESC']
+                ],
+                offset: (startIndex),
+                limit: limit,
+            })
+            console.log(results.results)
+            res.paginatedResults = results
             next()
         } catch (e) {
             res.status(500).json({ message: e.message })

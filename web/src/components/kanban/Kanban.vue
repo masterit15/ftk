@@ -2,14 +2,19 @@
   <div class="drag-container">
     <ul class="drag-list">
       <li
-        v-for="stage in stages"
+        v-for="(stage, index) in stages"
         class="drag-column"
         :class="{['drag-column-' + stage]: true}"
-        :key="stage"
+        :key="index"
       >
         <span class="drag-column-header">
           <slot :name="stage">
-            <h2>{{ stage }}</h2>
+            <h2 @click.prevent="edit = stage">{{ stage }}</h2>
+            
+            <input v-if="edit == stage" v-model="status" type="text" name="status" @input="editStatus(index)">
+            <div class="add_btn" @click.prevent="addStatus()">
+              <i class="fa fa-plus"></i>
+            </div>
           </slot>
         </span>
         <div class="drag-options"></div>
@@ -37,6 +42,7 @@
 </template>
 
 <script>
+import {Chrome} from 'vue-color'
 import dragula from "dragula";
 import { Machine } from "xstate";
 export default {
@@ -61,8 +67,14 @@ export default {
   },
   data() {
     return {
+      edit: '',
+      status: '',
+      color: '',
       machine: null
     };
+  },
+  components: {
+    'chrome-picker': Chrome,
   },
   computed: {
     localBlocks() {
@@ -70,6 +82,16 @@ export default {
     }
   },
   methods: {
+    updateValue(){
+
+    },
+    editStatus(index){
+      console.log(this.stages[index])
+      this.stages[index] = this.status
+    },
+    addStatus(){
+
+    },
     getBlocks(status) {
       return this.localBlocks.filter(block => block.status === status);
     },
