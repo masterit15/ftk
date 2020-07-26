@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 console.log('sadadasdasdasdasdasd',process.env.NODE_ENV)
 const PORT = process.env.PORT || config.get('port')
-const HostName = config.get('host')
+const HostName = config.get('host') || 'localhost'
 
 async function start() {
     try {
