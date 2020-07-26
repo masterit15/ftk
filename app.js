@@ -34,7 +34,6 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.resolve(__dirname, 'web', 'dist', 'index.html'))
     })
 }
-console.log('sadadasdasdasdasdasd',process.env.NODE_ENV)
 const PORT = process.env.PORT || config.get('port')
 const HostName = config.get('host') || 'localhost'
 
