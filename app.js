@@ -35,13 +35,13 @@ if (process.env.NODE_ENV === 'production') {
     })
 }
 console.log('sadadasdasdasdasdasd',process.env.NODE_ENV)
-const PORT = config.get('port') || 3000
-const HostName = config.get('host') || '127.0.0.1'
+const PORT = process.env.PORT || config.get('port')
+const HostName = config.get('host')
 
 async function start() {
     try {
         await sequelize.authenticate();
-        server.listen(PORT, HostName, () => console.log(`App has been started on port ${PORT}...`))
+        server.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);
