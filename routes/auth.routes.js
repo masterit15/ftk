@@ -155,8 +155,8 @@ router.post('/token', async (req, res) => {
                     refreshToken,
                 })
             })
-        }).catch(err => {
-            return res.sendStatus(403)
+        }).catch(err => { 
+            return res.status(403)
         })
 })
 

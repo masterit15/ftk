@@ -9,7 +9,7 @@ const Timeline = sequelize.define("timeline", {
   },
   event: {type: Sequelize.ENUM, values:['comment','edited', 'changestatus', 'created'], defaultValue: 'comment'},
   text: {type: Sequelize.TEXT, allowNull: true},
-  file: {type: Sequelize.TEXT, allowNull: true},
+  file: {type: Sequelize.JSON, allowNull: true},
   time: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
   autor: {type: Sequelize.STRING, allowNull: true}
 })

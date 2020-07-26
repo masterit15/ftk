@@ -18,6 +18,9 @@
 <script>
 import {mapGetters, mapActions} from 'vuex'
 export default {
+  props: {
+    value: String
+  },
   data() {
     return {
       respons: '',
@@ -34,6 +37,11 @@ export default {
       });
     }
   },
+  created() {
+    if(this.value){
+      this.respons = this.value
+    }
+  },
   methods: {
     ...mapActions(['getUsers']),
     async responsibleDropDown(){
@@ -45,16 +53,14 @@ export default {
         let res = await this.getUsers(params)
 
       if(this.$refs.responsible.value && this.$refs.responsible.value.length >= 2){
-        
         this.responsibleDD = true
-        console.log(this.responsibleDD)
       }else{
         this.responsibleDD = false
       }
     },
     selectRespons(name, id){
       this.respons = name
-      this.$emit('respons', id)
+      this.$emit('respons', {id,name})
     }
   },
 }

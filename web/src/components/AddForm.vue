@@ -66,9 +66,10 @@
                     ></b-form-timepicker>
                   </b-col>
                 </b-row>
-                <DepartamentSearch v-on:respons="getDepartament"/>
-                <ResponsibleSearch v-on:respons="getResponsoble" />
-                <AddressSearch v-on:address="getAddress" />
+                <pre>{{claim}}</pre>
+                <DepartamentSearch v-model="claim.departament"  v-on:departament="getDepartament"/>
+                <ResponsibleSearch v-model="claim.responsible" v-on:respons="getResponsoble" />
+                <AddressSearch v-model="claim.address" v-on:address="getAddress" />
                 <label>Текст заявки:</label>
                 <vue-editor
                   class="mb-md-3"
@@ -76,25 +77,30 @@
                   :editor-toolbar="customToolbar"
                 />
                 <label>Файлы к заявке:</label>
+                <ul class="editor_files">
+                  <li v-for="file in claim.filesPath" :key="file">
+                    <div :style="{backgroundImage: `url(${file})`}"></div>
+                  </li>
+                </ul>
                 <FileUploader uploader="1" v-on:files="getFiles"/>
                 <div id="answer" v-if="formData">
                 <label>Ответ к заявке:</label>
                 <vue-editor
                   class="mb-md-3"
-                  v-model="claim.description"
+                  v-model="claim.answerDescription"
                   :editor-toolbar="customToolbar"
                 />
                 <label>Файлы ответ к заявке:</label>
-                <FileUploader uploader="3" v-on:files="getAnswerFiles"/>
+                <FileUploader uploader="2" v-on:files="getAnswerFiles"/>
                 </div>
               </b-form-group>
-              <b-button type="submit" variant="success">Сохранить</b-button>
-              <b-button type="reset" variant="warning">Обновить</b-button>
+              <b-button @click="add" variant="success">Сохранить</b-button>
+              <b-button @click="put" variant="warning">Обновить</b-button>
             </b-form>
           </div></div>
         </b-col>
         <b-col xl="6">
-          <Timelines />
+          <Timelines :claim="claim.id"/>
         </b-col>
       </b-row>
     </b-overlay>
@@ -186,7 +192,7 @@ export default {
     claim() {
       let control = new Date(this.condate).getFullYear() + "-" + new Date(this.condate).getMonth() + "-" + new Date(this.condate).getDate()
       let claim = {
-        status: this.langRuss(this.status),
+        status: this.status,
         address: '',
         userId: this.user.userId,
         filesPath: {},
@@ -194,8 +200,11 @@ export default {
         answerFiles: {},
         controlDate: `${control}T${this.contime}Z`,
         creationDate: `${this.credate}T${this.cretime}Z`,
-        departmentId: null,
+        departamentId: null,
+        createdUser: this.user.username,
+        departament: '',
         responsibleId: null,
+        responsible: '',
         answerDescription: ''
       };
       if (!this.formData) {
@@ -208,15 +217,22 @@ export default {
     let body = document.querySelector("body");
     body.style.position = "fixed";
     body.style.width = "100%";
+    this.getTimeline(this.claim.id);
   },
   methods: {
-    ...mapActions(['addClaims', 'uploadFiles']),
-    getResponsoble(id) {
-      console.log(id)
-      this.claim.responsibleId = id;
+    ...mapActions([
+      'addClaims',
+      'putClaims', 
+      'uploadFiles',
+      'getTimeline'
+      ]),
+    getResponsoble(data) {
+      this.claim.responsibleId = data.id;
+      this.claim.responsible = data.name;
     },
-    getDepartament(id) {
-      this.claim.responsibleId = id;
+    getDepartament(data) {
+      this.claim.departamentId = data.id;
+      this.claim.departament = data.name;
     },
     getAddress(address) {
       this.claim.address = address;
@@ -234,31 +250,21 @@ export default {
       }
       return
     },
-    async onSubmit() {
+    async add() {
       this.overlay = true;
       this.claim.filesPath = await this.uploaderFiles(this.files)
       this.claim.answerFiles = await this.uploaderFiles(this.answerFiles)
-
-      this.addClaims(this.claim)
-      setTimeout(() => {
-        this.overlay = false;
-      }, 5000);
-
-
+      let res = await this.addClaims(this.claim)
+      console.log(res)
+      this.overlay = false;
     },
-    langRuss(status) {
-      switch (status) {
-        case "Worked":
-          status = "В работе";
-          break;
-        case "Done":
-          status = "Обработанные";
-          break;
-        default:
-          status = "Не обработанные";
-          break;
-      }
-      return status;
+    async put(){
+      this.overlay = true;
+      this.claim.filesPath = await this.uploaderFiles(this.files)
+      this.claim.answerFiles = await this.uploaderFiles(this.answerFiles)
+      let res = await this.putClaims(this.claim)
+      console.log(res)
+      this.overlay = false;
     }
   },
   beforeDestroy() {}

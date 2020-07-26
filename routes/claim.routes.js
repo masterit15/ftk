@@ -8,6 +8,7 @@ const convert = require('xml-js')
 const fs = require('fs')
 const Claim = require('../models/Claim');
 const Timeline = require('../models/Timeline');
+const Departament = require('../models/Departament')
 const User = require('../models/User');
 const router = Router();
 
@@ -54,7 +55,7 @@ router.get('/export', auth, paginatedResults(Claim), async (req, res) => {
 /*
     метод отдачи обращений
 */
-router.get('/', auth, paginatedResults(Claim), (req, res) => {
+router.get('/', paginatedResults(Claim), (req, res) => {
     return res.json({
         success: true,
         claims: res.paginatedResults
@@ -75,8 +76,11 @@ router.post('/', auth, async (req, res, next) => {
         answerFiles,
         controlDate,
         creationDate,
-        departmentId,
+        createdUser,
+        departament,
+        departamentId,
         responsibleId,
+        responsible,
         answerDescription,
     } = req.body
     Claim.create({
@@ -89,30 +93,33 @@ router.post('/', auth, async (req, res, next) => {
         answerFiles,
         controlDate: Date(controlDate),
         creationDate: Date(creationDate),
-        departmentId,
+        createdUser,
+        departament,
+        departamentId,
         responsibleId,
+        responsible,
         answerDescription,
     })
         .then(async claims => {
             let autor = await User.findOne({ where: { id: claims.dataValues.userId }, raw: true })
             let timelines = await Timeline.create({
                 event: 'created',
-                text: `Обращение № ${claims.dataValues.regnumber} было создано`,
+                text: `Заявка № ${claims.dataValues.id} была создана`,
                 time: claims.dataValues.credate,
                 claimId: claims.dataValues.id,
                 userId: claims.dataValues.userId,
-                autor: autor.login
+                autor: autor.username
             })
             return res.json({
                 success: true,
                 claims,
                 timelines,
-                message: 'Обращение успешно добавлено в базу данных.'
+                message: 'Заявка успешно добавлена'
             });
         }).catch((err) => {
             return res.json({
                 success: false,
-                message: 'Не удалось сохранить обрашение',
+                message: 'Не удалось сохранить заявку',
                 err: err
             });
         });
@@ -132,85 +139,10 @@ router.get('/:id', async (req, res, next) => {
         .catch((err) => {
             return res.json({
                 success: false,
-                message: 'Не удалось получить обращение',
+                message: 'Не удалось получить заявку',
                 err: err
             });
         });
-});
-/*
-    метод добавления в таймлайн обращения по ID
-*/
-router.post('/tml/', auth, async (req, res, next) => {
-    const { event, text, time, file, ClaimId, userId } = req.body
-    let message
-    if (event == 'comment') {
-        message = 'Комментарий добавлен'
-    } else {
-        message = text
-    }
-    let autor = await User.findOne({ where: { id: userId }, raw: true })
-    Timeline.create({
-        event,
-        text,
-        time,
-        file,
-        cqlaimId,
-        userId,
-        autor: autor.login
-    }).then(timelines => {
-        return res.json({
-            success: true,
-            message,
-            timelines
-        });
-    }).catch(err => {
-        return res.json({
-            success: false,
-            message: 'Не удается добавить комментарий',
-            err: err
-        });
-    });
-});
-/*
-    метод получение таймлайна по ID обращения
-*/
-router.get('/tml/:id', auth, async (req, res, next) => {
-    let id = req.params.id
-    await Timeline.findAll({ where: { ClaimId: id }, raw: true })
-        .then(timelines => {
-            return res.json({
-                success: true,
-                timelines: timelines
-            });
-        })
-        .catch(err => {
-            return res.json({
-                success: false,
-                err: err
-            });
-        });
-});
-/*
-    метод удаления таймлайна по ID
-*/
-router.delete('/tml/:id', auth, async (req, res, next) => {
-    let id = req.params.id;
-    Timeline.destroy({
-        where: { id }
-    }).then(timeline => {
-        return res.json({
-            success: true,
-            message: 'Комментарий успешно удален',
-            timeline
-        });
-    })
-        .catch((err) => {
-            return res.json({
-                success: false,
-                message: 'Невозможно удалить комментарий',
-                err: err
-            });
-        })
 });
 /*
     метод обновления обращения по ID
@@ -226,8 +158,11 @@ router.put('/:id', auth, async (req, res, next) => {
         answerFiles,
         controlDate,
         creationDate,
-        departmentId,
+        departamentId,
+        createdUser,
+        departament,
         responsibleId,
+        responsible,
         answerDescription,
     } = req.body
     // обновление обращения
@@ -240,22 +175,25 @@ router.put('/:id', auth, async (req, res, next) => {
         answerFiles,
         controlDate,
         creationDate,
-        departmentId,
+        departamentId,
+        createdUser,
+        departament,
         responsibleId,
+        responsible,
         answerDescription,
     }, {
         where: { id }
     })
-        .then(claims => {
+        .then(async claims => {
             return res.json({
                 success: true,
-                message: 'Обращение успешно обновлено.',
+                message: 'Заявка успешно обновлена.',
                 claims,
             });
         }).catch(err => {
             return res.json({
                 success: false,
-                message: 'Не удалось обновить обрашение',
+                message: 'Не удалось обновить заявку.',
                 err: err
             });
         });
@@ -346,8 +284,8 @@ function getTotal(model, searchparam, search, status = 'Все', sortIsmain = 'a
 }
 function paginatedResults(model) {
     return async (req, res, next) => {
-        const page = parseInt(req.query.page)
-        const limit = parseInt(req.query.limit)
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
         const search = req.query.search
         const searchparam = req.query.searchparam
         const status = req.query.status
@@ -380,135 +318,122 @@ function paginatedResults(model) {
             /*
                 условие поиска обращений
             */
-            if (search !== '' && search !== undefined) {
-                if (searchparam == "fio") {
-                    results.results = await model.findAll({
-                        where: { fio: { [Op.like]: '%' + search + '%' } },
-                        order: [
-                            ["id", 'DESC']
-                        ],
-                        offset: (startIndex),
-                        limit: limit,
-                        raw: true
-                    })
-                    res.paginatedResults = results
-                } else if (searchparam == "mobilenumber") {
-                    results.results = await model.findAll({
-                        where: { mobilenumber: { [Op.like]: '%' + search + '%' } },
-                        order: [
-                            ["id", 'DESC']
-                        ],
-                        offset: (startIndex),
-                        limit: limit,
-                        raw: true
-                    })
-                    res.paginatedResults = results
-                } else if (searchparam == "phonenumber") {
-                    results.results = await model.findAll({
-                        where: { phonenumber: { [Op.like]: '%' + search + '%' } },
-                        order: [
-                            ["id", 'DESC']
-                        ],
-                        offset: (startIndex),
-                        limit: limit,
-                        raw: true
-                    })
-                    res.paginatedResults = results
-                } else if (searchparam == "address") {
-                    results.results = await model.findAll({
-                        where: { address: { [Op.like]: '%' + search + '%' } },
-                        order: [
-                            ["id", 'DESC']
-                        ],
-                        offset: (startIndex),
-                        limit: limit,
-                        raw: true
-                    })
-                    res.paginatedResults = results
-                } else if (searchparam == "text") {
-                    results.results = await model.findAll({
-                        where: { text: { [Op.like]: '%' + search + '%' } },
-                        order: [
-                            ["id", 'DESC']
-                        ],
-                        offset: (startIndex),
-                        limit: limit,
-                        raw: true
-                    })
-                    res.paginatedResults = results
-                }
-            } else if (status !== 'Все') {
-                results.results = await model.findAll({
-                    where: { status: status },
-                    order: [
-                        ["id", 'DESC']
-                    ],
-                    offset: (startIndex),
-                    limit: limit,
-                    raw: true
-                })
-                results.results
-                res.paginatedResults = results
-            }
-            else if (dateinterval !== undefined) {
-                results.results = await model.findAll({
-                    where: {
-                        credate: {
-                            [Op.gt]: dateinterval
-                            //[Op.lte]: dateintervalto
-                        }
-                    },
-                    order: [
-                        ["id", 'DESC']
-                    ],
-                    offset: (startIndex),
-                    limit: limit,
-                })
-                results.results
-                res.paginatedResults = results
-            }
-            else if (dateintervalfrom !== undefined || dateintervalto !== undefined) {
-                results.results = await model.findAll({
-                    where: {
-                        credate: {
-                            [Op.between]: [dateintervalfrom, dateintervalto]
-                            //[Op.lte]: dateintervalto
-                        }
-                    },
-                    order: [
-                        ["id", 'DESC']
-                    ],
-                    offset: (startIndex),
-                    limit: limit,
-                })
-                results.results
-                res.paginatedResults = results
-            }
-            else {
-                if (sortIsmain == 'main') {
-                    results.results = await model.findAll(
-                        {
-                            where: { userId },
-                            order: [
-                                ["id", 'DESC']
-                            ],
-                            offset: (startIndex),
-                            limit: limit,
-                        })
-                    res.paginatedResults = results
-                } else {
+            // if (search !== '' && search !== undefined) {
+            //     if (searchparam == "fio") {
+            //         results.results = await model.findAll({
+            //             where: { fio: { [Op.like]: '%' + search + '%' } },
+            //             order: [
+            //                 ["id", 'DESC']
+            //             ],
+            //             offset: (startIndex),
+            //             limit: limit,
+            //             raw: true
+            //         })
+            //         res.paginatedResults = results
+            //     } else if (searchparam == "mobilenumber") {
+            //         results.results = await model.findAll({
+            //             where: { mobilenumber: { [Op.like]: '%' + search + '%' } },
+            //             order: [
+            //                 ["id", 'DESC']
+            //             ],
+            //             offset: (startIndex),
+            //             limit: limit,
+            //             raw: true
+            //         })
+            //         res.paginatedResults = results
+            //     } else if (searchparam == "phonenumber") {
+            //         results.results = await model.findAll({
+            //             where: { phonenumber: { [Op.like]: '%' + search + '%' } },
+            //             order: [
+            //                 ["id", 'DESC']
+            //             ],
+            //             offset: (startIndex),
+            //             limit: limit,
+            //             raw: true
+            //         })
+            //         res.paginatedResults = results
+            //     } else if (searchparam == "address") {
+            //         results.results = await model.findAll({
+            //             where: { address: { [Op.like]: '%' + search + '%' } },
+            //             order: [
+            //                 ["id", 'DESC']
+            //             ],
+            //             offset: (startIndex),
+            //             limit: limit,
+            //             raw: true
+            //         })
+            //         res.paginatedResults = results
+            //     } else if (searchparam == "text") {
+            //         results.results = await model.findAll({
+            //             where: { text: { [Op.like]: '%' + search + '%' } },
+            //             order: [
+            //                 ["id", 'DESC']
+            //             ],
+            //             offset: (startIndex),
+            //             limit: limit,
+            //             raw: true
+            //         })
+            //         res.paginatedResults = results
+            //     }
+            // }
+            // else if (dateinterval !== undefined) {
+            //     results.results = await model.findAll({
+            //         where: {
+            //             credate: {
+            //                 [Op.gt]: dateinterval
+            //                 //[Op.lte]: dateintervalto
+            //             }
+            //         },
+            //         order: [
+            //             ["id", 'DESC']
+            //         ],
+            //         offset: (startIndex),
+            //         limit: limit,
+            //     })
+            //     results.results
+            //     res.paginatedResults = results
+            // }
+            // else if (dateintervalfrom !== undefined || dateintervalto !== undefined) {
+            //     results.results = await model.findAll({
+            //         where: {
+            //             credate: {
+            //                 [Op.between]: [dateintervalfrom, dateintervalto]
+            //                 //[Op.lte]: dateintervalto
+            //             }
+            //         },
+            //         order: [
+            //             ["id", 'DESC']
+            //         ],
+            //         offset: (startIndex),
+            //         limit: limit,
+            //     })
+            //     results.results
+            //     res.paginatedResults = results
+            // }
+            // else {
+            //     if (sortIsmain == 'main') {
+            //         results.results = await model.findAll(
+            //             {
+            //                 where: { userId },
+            //                 order: [
+            //                     ["id", 'DESC']
+            //                 ],
+            //                 offset: (startIndex),
+            //                 limit: limit,
+            //             })
+            //         res.paginatedResults = results
+            //     } else {
                     
-                    results.results = await model.findAll({
-                        order: [
-                            ["id", 'DESC']
-                        ],
-                        offset: (startIndex),
-                        limit: limit,
-                    })
-                    console.log(results.results)
-                    res.paginatedResults = results
-                }
-            }
+            //         results.results = await model.findAll({
+            //             order: [
+            //                 ["id", 'DESC']
+            //             ],
+            //             offset: (startIndex),
+            //             limit: limit,
+            //         })
+            //         res.paginatedResults = results
+            //     }
+            // }
             results.results = await model.findAll({
                 order: [
                     ["id", 'DESC']
@@ -516,7 +441,6 @@ function paginatedResults(model) {
                 offset: (startIndex),
                 limit: limit,
             })
-            console.log(results.results)
             res.paginatedResults = results
             next()
         } catch (e) {

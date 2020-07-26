@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize");
 const sequelize = require('../db')
-const User = require('./User')
 const Timeline = require('./Timeline')
 const Claim = sequelize.define("claim", {
   id: {
@@ -14,6 +13,8 @@ const Claim = sequelize.define("claim", {
   description: {type: Sequelize.TEXT, allowNull: false},
   status: { type: Sequelize.ENUM, values: ['Не обработанные', 'В работе', 'Обработанные'], defaultValue: 'Не обработанные', allowNull: false},
   address: {type: Sequelize.STRING, allowNull: false},
+  departament: {type: Sequelize.STRING, allowNull: false},
+  createdUser: {type: Sequelize.STRING, allowNull: false},
   creationDate: {
     type: Sequelize.DATE, 
     allowNull: false,
@@ -24,6 +25,7 @@ const Claim = sequelize.define("claim", {
     allowNull: false,
   },
   responsibleId: {type: Sequelize.INTEGER, allowNull: false},
+  responsible: {type: Sequelize.STRING, allowNull: false},
   answerDescription: { type: Sequelize.TEXT, allowNull: false }
 })
 Claim.hasMany(Timeline, { onDelete: "cascade"});

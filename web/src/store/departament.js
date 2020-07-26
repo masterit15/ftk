@@ -27,7 +27,6 @@ export default ({
     },
     async getDepartaments({ commit }) {
       let res = await axios.get('/api/departament/')
-      console.log(res.data)
       commit('set_departaments', res.data.departament.results)
       return res
     },

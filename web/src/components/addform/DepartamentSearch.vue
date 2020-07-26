@@ -7,7 +7,7 @@
               <b-dropdown-item 
               v-for="(departament, index) in departaments" 
               :key="index" 
-              @click.prevent="selectdepartament(departament.name, departament.departamentId),departamentDD = false"
+              @click.prevent="selectdepartament(departament.name, departament.id),departamentDD = false"
               >{{departament.name}}
               </b-dropdown-item>
             </div>
@@ -18,6 +18,9 @@
 <script>
 import {mapGetters, mapActions} from 'vuex'
 export default {
+  props: {
+    value: String
+  },
   data() {
     return {
       departament: '',
@@ -32,6 +35,11 @@ export default {
           .toLowerCase()
           .includes(this.departament.toLowerCase());
       });
+    }
+  },
+  created() {
+    if(this.value){
+      this.departament = this.value
     }
   },
   methods: {
@@ -51,7 +59,7 @@ export default {
     },
     selectdepartament(name, id){
       this.departament = name
-      this.$emit('departament', id)
+      this.$emit('departament', {id,name})
     }
   },
 }

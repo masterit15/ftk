@@ -36,7 +36,6 @@ export default {
     );
     // ответ перехватчик
     axios.interceptors.response.use(async response =>{
-      console.log(response.data)
         if (response.data.token === false) {
           let res = await this.refreshToken()
           if(!res){

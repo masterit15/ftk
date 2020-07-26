@@ -34,16 +34,36 @@ export default {
   watch: {
     addresssearch(val) {
       val && val !== this.address && this.querySelections(val);
-      this.$emit("address", this.addresssearch)
+      this.$emit("address", this.addresssearch);
     }
   },
   created() {
     this.initializeYandexMap();
+    navigator.geolocation.getCurrentPosition(position => {
+      let lat = position.coords.latitude;
+      let lng = position.coords.longitude;
+      this.maps
+        .geocode([lat, lng])
+        .then(res => {
+          let firstGeoObject = res.geoObjects.get(0);
+          let name = firstGeoObject.getAddressLine().length
+            ? firstGeoObject.getAddressLine()
+            : firstGeoObject.getAdministrativeAreas();
+          this.addresssearch = name;
+          this.$emit("address", this.addresssearch);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+    if(this.address){
+      this.addresssearch = this.address
+    }
   },
   methods: {
     ...mapActions(["addClaims"]),
     addressDropDown() {
-      if (this.$refs.address.value && this.$refs.address.value.length >= 2) {
+      if (this.addressArr.length > 0) {
         this.addresDD = true;
       } else {
         this.addresDD = false;
@@ -56,23 +76,6 @@ export default {
         )
         .then(async maps => {
           this.maps = maps;
-          navigator.geolocation.getCurrentPosition(position => {
-            let lat = position.coords.latitude;
-            let lng = position.coords.longitude;
-            this.maps
-              .geocode([lat, lng])
-              .then(res => {
-                let firstGeoObject = res.geoObjects.get(0);
-                let name = firstGeoObject.getAddressLine().length
-                  ? firstGeoObject.getAddressLine()
-                  : firstGeoObject.getAdministrativeAreas();
-                this.addresssearch = name;
-                this.$emit("address", this.addresssearch);
-              })
-              .catch(err => {
-                console.log(err);
-              });
-          });
         })
         .catch(error => console.log("Ошибка!", error));
     },

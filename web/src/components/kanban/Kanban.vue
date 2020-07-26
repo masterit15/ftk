@@ -2,35 +2,39 @@
   <div class="drag-container">
     <ul class="drag-list">
       <li
-        v-for="stage in stages"
+        v-for="(stage, index) in stages"
         class="drag-column"
-        :class="{['drag-column-' + stage]: true}"
-        :key="stage"
+        :class="{['drag-column-' + index]: true}"
+        :key="index"
       >
-        <span class="drag-column-header">
+        <span class="drag-column-header" :style="{backgroundColor: color[index]}">
           <slot :name="stage">
             <h2>{{ stage }}</h2>
           </slot>
         </span>
         <div class="drag-options"></div>
-        <div v-bar><div>
-        <ul class="drag-inner-list" ref="list" :data-status="stage">
-          <!-- <transition-group name="comment" tag="ul" class="drag-inner-list" ref="list" :data-status="stage"> -->
-            <li
-              class="drag-item"
-              v-for="block in getBlocks(stage)"
-              :data-block-id="block.id"
-              :key="block.id"
-            >
-              <slot :name="block.id">
-                <strong>{{ block.status }}</strong>
-                <div>{{ block.id }}</div>
-              </slot>
-            </li>
-          <!-- </transition-group> -->
-        </ul>
-        </div></div>
-        <div class="drag-column-footer">
+        <div v-bar>
+          <div>
+            <ul class="drag-inner-list" ref="list" :data-status="stage">
+              <li
+                class="drag-item"
+                v-for="block in getBlocks(stage)"
+                :data-block-id="block.id"
+                :key="block.id"
+                :style="{backgroundColor: color[index]}"
+              >
+                <slot :name="block.id">
+                  <strong>{{ block.status }}</strong>
+                  <div>{{ block.id }}</div>
+                  <div>{{ block.id }}</div>
+                  <div>{{ block.id }}</div>
+                  <div>{{ block.id }}</div>
+                </slot>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="drag-column-footer" :style="{backgroundColor: color[index]}">
           <slot :name="`footer-${stage}`"></slot>
         </div>
       </li>
@@ -49,6 +53,10 @@ export default {
       required: true
     },
     blocks: {
+      type: Array,
+      required: true
+    },
+    color: {
       type: Array,
       required: true
     },

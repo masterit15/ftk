@@ -4,7 +4,7 @@ import axios from "axios"
 
 export default ({
   actions: {
-    async uploadFiles({commit}, files){
+    async uploadFiles({}, files){
       const formData = new FormData();
       files.forEach(file => {
         formData.append('files', file)
@@ -16,5 +16,8 @@ export default ({
       });
       return filePath
     },
+    async deleteFiles({}, files){
+      let res = await axios.delete('/api/upload', {params: {files: files}})
+    }
   }
 })

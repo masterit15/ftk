@@ -11,28 +11,27 @@ export default({
   },
   actions: {
     async addTimeline({dispatch}, data){
-      let res = await axios.post('/api/claims/tml', data)
-      console.log(res)
-      dispatch('getTimeline')
+      let res = await axios.post('/api/tml', data)
+      dispatch('getTimeline', data.claimId)
       return res
     },
     async putTimeline({dispatch}, data){
-      let res = await axios.put('/api/claims/tml', data)
+      let res = await axios.put('/api/tml', data)
       dispatch('getTimeline')
       return res
     },
     async deleteTimeline({dispatch}, data){
-      let res = await axios.delete('/api/claims/tml', data)
-      dispatch('getTimeline')
+      let res = await axios.delete(`/api/tml/${data.id}`)
+
+      dispatch('getTimeline', data.claimId)
       return res
     },
-    async getTimeline({commit}, data){
-      let res = await axios.get('/api/claims/tml', {
-        params: data
+    async getTimeline({commit}, id){
+      let res = await axios.get('/api/tml/', {
+        params: {id}
       })
-      let claims = await res.data.timeline.results
-      // console.log(claims)
-      commit('set_timeline', claims)
+      let tml = await res.data.timelines
+      commit('set_timeline', tml)
       return res
     }
   },

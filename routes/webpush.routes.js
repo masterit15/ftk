@@ -1,10 +1,7 @@
 const { Router } = require('express')
-const config = require('config')
-const webpush = require('web-push')
+const webpush = require('../webpush')
 const User = require('../models/User')
 const router = Router()
-
-webpush.setVapidDetails('mailto:masterit15@yandex.ru', config.get('public_key'), config.get('privat_key'));
 
 router.post('/', (req, res) => {
     const {id, subscription} = req.body;

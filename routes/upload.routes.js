@@ -10,7 +10,8 @@ const storageConfig = multer.diskStorage({
       cb(null, `./uploads`);
   },
   filename: (req, file, cb) =>{
-      cb(null, Date.now()+ "-" +file.originalname);
+    let fileType = file.originalname.split(".").pop()
+      cb(null, Date.now()+''+Math.random()+'.'+fileType);
   }
 });
 const upload = multer({ storage: storageConfig })
