@@ -41,7 +41,7 @@ const HostName = config.get('host')
 async function start() {
     try {
         await sequelize.authenticate();
-        server.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
+        server.listen(PORT, HostName, () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);
