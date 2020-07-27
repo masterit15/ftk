@@ -1,5 +1,5 @@
 const sequelize = require("sequelize");
-const db = require('../db')
+const db = require('../db/db')
 const MessageStatus = require('../models/MessageStatus')
 const Message = db.define("messages", {
   id: {

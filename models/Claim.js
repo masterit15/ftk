@@ -1,5 +1,5 @@
 const sequelize = require("sequelize");
-const db = require('../db')
+const db = require('../db/db')
 const Timeline = require('./Timeline')
 const Claim = db.define("claim", {
   id: {

@@ -1,5 +1,5 @@
 const express = require('express')
-const db = require('./db')
+const db = require('./db/db')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const config = require('config')

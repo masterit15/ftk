@@ -1,5 +1,5 @@
 const sequelize = require("sequelize");
-const db = require('../db')
+const db = require('../db/db')
 const User = require('./User')
 const Claim = require('./Claim')
 const Departament = db.define("departament", {

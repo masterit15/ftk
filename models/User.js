@@ -1,5 +1,5 @@
 const sequelize = require("sequelize");
-const db = require('../db')
+const db = require('../db/db')
 const Claims = require('./Claim')
 const Timeline = require('../models/Timeline')
 const Chat = require('../models/Chat')

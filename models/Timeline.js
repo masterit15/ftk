@@ -1,5 +1,5 @@
 const sequelize = require("sequelize");
-const db = require('../db')
+const db = require('../db/db')
 const Timeline = db.define("timeline", {
   id: {
     type: sequelize.INTEGER,
