@@ -7,6 +7,7 @@
     "jwtRefreshSecret": "1b9a5962017412e1195c3f5d048dd80140f6ac4f3a62cb3987fc541d8ce75c428f73404246abc2de117344c742ee9071af9252bf2d34531d93180ead1759f167361bda6525daae514efbe41a70b3138d4b5e9289c055f62ecc6c55e51c46af1014a1838dac24c0ce4bb111b7ffb23550edbfe4aba8ba049b696799c379e2ea96",
     "baseUrl": "http://localhost:3000/",
     "DBhost": "127.0.0.1",
+    "DBport": "3306",
     "DBname": "ftk",
     "DBlogin": "root",
     "DBpassword": "root"
