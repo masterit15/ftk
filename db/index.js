@@ -1,7 +1,13 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("ftk", "root", "root", {
+const config = require('config')
+const DBname = config.get('DBname')
+const DBlogin = config.get('DBlogin')
+const DBpassword = config.get('DBpassword')
+const DBhost = config.get('DBhost')
+
+const sequelize = new Sequelize(DBname, DBlogin, DBpassword, {
   dialect: "mysql",
-  host: "127.0.0.1",
+  host: DBhost,
   define: {
     timestamps: false
   },
