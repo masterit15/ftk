@@ -28,12 +28,12 @@ app.use('/api/chat', require('./routes/chat.routes'))
 app.use('/api/upload', require('./routes/upload.routes'))
 app.use('/api/departament', require('./routes/departament.routes'))
 
-if (process.env.NODE_ENV === 'production') {
-    app.use('/', express.static(path.join(__dirname, 'web', 'dist')))
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'web', 'dist', 'index.html'))
-    })
-}
+// if (process.env.NODE_ENV === 'production') {
+//     app.use('/', express.static(path.join(__dirname, 'web', 'dist')))
+//     app.get('*', (req, res) => {
+//         res.sendFile(path.resolve(__dirname, 'web', 'dist', 'index.html'))
+//     })
+// }
 const PORT = process.env.PORT || config.get('port')
 const HostName = config.get('host') || 'localhost'
 
