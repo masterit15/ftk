@@ -1,15 +1,15 @@
-const Sequelize = require("sequelize");
-const sequelize = require('../db')
+const sequelize = require("sequelize");
+const db = require('../db')
 const MessageStatus = require('../models/MessageStatus')
-const Message = sequelize.define("messages", {
+const Message = db.define("messages", {
   id: {
-    type: Sequelize.INTEGER,
+    type: sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
-  text: {type: Sequelize.TEXT},
-  timestamp: {type: Sequelize.DATE}
+  text: {type: sequelize.TEXT},
+  timestamp: {type: sequelize.DATE}
 })
 Message.hasMany(MessageStatus, { onDelete: "cascade"});
 module.exports = Message

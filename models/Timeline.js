@@ -1,17 +1,17 @@
-const Sequelize = require("sequelize");
-const sequelize = require('../db')
-const Timeline = sequelize.define("timeline", {
+const sequelize = require("sequelize");
+const db = require('../db')
+const Timeline = db.define("timeline", {
   id: {
-    type: Sequelize.INTEGER,
+    type: sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
-  event: {type: Sequelize.ENUM, values:['comment','edited', 'changestatus', 'created'], defaultValue: 'comment'},
-  text: {type: Sequelize.TEXT, allowNull: true},
-  file: {type: Sequelize.JSON, allowNull: true},
-  time: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
-  autor: {type: Sequelize.STRING, allowNull: true}
+  event: {type: sequelize.ENUM, values:['comment','edited', 'changestatus', 'created'], defaultValue: 'comment'},
+  text: {type: sequelize.TEXT, allowNull: true},
+  file: {type: sequelize.JSON, allowNull: true},
+  time: {type: sequelize.DATE, defaultValue: sequelize.NOW},
+  autor: {type: sequelize.STRING, allowNull: true}
 })
 
 module.exports = Timeline

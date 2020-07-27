@@ -1,15 +1,15 @@
-const Sequelize = require("sequelize");
-const sequelize = require('../db')
+const sequelize = require("sequelize");
+const db = require('../db')
 const User = require('./User')
 const Claim = require('./Claim')
-const Departament = sequelize.define("departament", {
+const Departament = db.define("departament", {
   id: {
-    type: Sequelize.INTEGER,
+    type: sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
-  name: {type: Sequelize.STRING, allowNull: false},
+  name: {type: sequelize.STRING, allowNull: false},
 })
 Departament.hasMany(Claim, { onDelete: "cascade"});
 Departament.hasMany(User);

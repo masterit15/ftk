@@ -1,32 +1,32 @@
-const Sequelize = require("sequelize");
-const sequelize = require('../db')
+const sequelize = require("sequelize");
+const db = require('../db')
 const Timeline = require('./Timeline')
-const Claim = sequelize.define("claim", {
+const Claim = db.define("claim", {
   id: {
-    type: Sequelize.INTEGER,
+    type: sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
-  filesPath: {type: Sequelize.JSON},
-  answerFiles: { type: Sequelize.JSON },
-  description: {type: Sequelize.TEXT, allowNull: false},
-  status: { type: Sequelize.ENUM, values: ['Не обработанные', 'В работе', 'Обработанные'], defaultValue: 'Не обработанные', allowNull: false},
-  address: {type: Sequelize.STRING, allowNull: false},
-  departament: {type: Sequelize.STRING, allowNull: false},
-  createdUser: {type: Sequelize.STRING, allowNull: false},
+  filesPath: {type: sequelize.JSON},
+  answerFiles: { type: sequelize.JSON },
+  description: {type: sequelize.TEXT, allowNull: false},
+  status: { type: sequelize.ENUM, values: ['Не обработанные', 'В работе', 'Обработанные'], defaultValue: 'Не обработанные', allowNull: false},
+  address: {type: sequelize.STRING, allowNull: false},
+  departament: {type: sequelize.STRING, allowNull: false},
+  createdUser: {type: sequelize.STRING, allowNull: false},
   creationDate: {
-    type: Sequelize.DATE, 
+    type: sequelize.DATE, 
     allowNull: false,
-    defaultValue: Sequelize.NOW
+    defaultValue: sequelize.NOW
   },
   controlDate: {
-    type: Sequelize.DATE, 
+    type: sequelize.DATE, 
     allowNull: false,
   },
-  responsibleId: {type: Sequelize.INTEGER, allowNull: false},
-  responsible: {type: Sequelize.STRING, allowNull: false},
-  answerDescription: { type: Sequelize.TEXT, allowNull: false }
+  responsibleId: {type: sequelize.INTEGER, allowNull: false},
+  responsible: {type: sequelize.STRING, allowNull: false},
+  answerDescription: { type: sequelize.TEXT, allowNull: false }
 })
 Claim.hasMany(Timeline, { onDelete: "cascade"});
 module.exports = Claim

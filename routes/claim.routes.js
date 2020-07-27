@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const db = require('../db')
-const Sequelize = require('sequelize')
-const Op = Sequelize.Op
+const sequelize = require('sequelize')
+const Op = sequelize.Op
 const path = require('path')
 const auth = require('../middleware/auth.middleware')
 const convert = require('xml-js')

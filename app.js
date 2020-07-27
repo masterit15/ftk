@@ -1,5 +1,5 @@
 const express = require('express')
-const sequelize = require('./db')
+const db = require('./db')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const config = require('config')
@@ -39,7 +39,7 @@ const HostName = config.get('host') || 'localhost'
 
 async function start() {
     try {
-        await sequelize.authenticate();
+        await db.authenticate();
         server.listen(PORT, HostName, () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
       } catch (error) {

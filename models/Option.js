@@ -1,17 +1,17 @@
-const Sequelize = require("sequelize");
-const sequelize = require('../db')
-const Option = sequelize.define("option", {
+const sequelize = require("sequelize");
+const db = require('../db')
+const Option = db.define("option", {
   id: {
-    type: Sequelize.INTEGER,
+    type: sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
-  title: {type: Sequelize.STRING, allowNull: false},
-  defaultcolor: {type: Sequelize.STRING, allowNull: false},
-  accentcolor: {type: Sequelize.STRING, allowNull: false},
-  dark: {type: Sequelize.BOOLEAN, allowNull: false},
-  background: {type: Sequelize.STRING, allowNull: false},
+  title: {type: sequelize.STRING, allowNull: false},
+  defaultcolor: {type: sequelize.STRING, allowNull: false},
+  accentcolor: {type: sequelize.STRING, allowNull: false},
+  dark: {type: sequelize.BOOLEAN, allowNull: false},
+  background: {type: sequelize.STRING, allowNull: false},
   //selectstatus: {type: Sequelize.ENUM, values:['Все','Не обработан','В работе','Обработана'], defaultValue: 'Не обработан', allowNull: false},
 })
 module.exports = Option

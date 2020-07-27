@@ -1,6 +1,6 @@
-const Sequelize = require("sequelize");
-const sequelize = require('../db')
-const Roster = sequelize.define("roster", {
+const sequelize = require("sequelize");
+const db = require('../db')
+const Roster = db.define("roster", {
 
 })
 module.exports = Roster

@@ -1,6 +1,6 @@
 const { Router } = require('express')
-const Sequelize = require('sequelize')
-const Op = Sequelize.Op
+const sequelize = require('sequelize')
+const Op = sequelize.Op
 const bcrypt = require('bcrypt')
 const { check, validationResult } = require('express-validator')
 const User = require('../models/User')

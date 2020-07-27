@@ -1,6 +1,6 @@
 const { Router } = require('express')
-const Sequelize = require('sequelize')
-const Op = Sequelize.Op
+const sequelize = require('sequelize')
+const Op = sequelize.Op
 const auth = require('../middleware/auth.middleware')
 const fs = require('fs')
 const Claim = require('../models/Claim');

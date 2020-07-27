@@ -1,7 +1,7 @@
-const Sequelize = require("sequelize");
-const sequelize = require('../db')
-const MessagesStatus = sequelize.define("messagessatus", {
-  read: {type: Sequelize.BOOLEAN},
-  notified: {type: Sequelize.BOOLEAN}
+const sequelize = require("sequelize");
+const db = require('../db')
+const MessagesStatus = db.define("messagessatus", {
+  read: {type: sequelize.BOOLEAN},
+  notified: {type: sequelize.BOOLEAN}
 })
 module.exports = MessagesStatus
