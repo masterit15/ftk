@@ -44,6 +44,8 @@
     "shortid": "^2.2.15",
     "socket.io": "^2.3.0",
     "web-push": "^3.4.4",
-    "sequelize": "^5.22.3"
+    "sequelize": "^5.22.3",
+    "bcrypt": "^3.0.8",
+    "xml-js": "^1.6.11"
   }
 }
