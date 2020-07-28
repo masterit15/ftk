@@ -84,7 +84,7 @@ router.post(
     ],
     async (req, res) => {
         try {
-            console.log(req.body)
+            console.log("logs",req)
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 return res.status(400).json({
@@ -94,7 +94,6 @@ router.post(
             }
             //const {email, password} = req.body
             const { login, password } = req.body
-            console.log(req.body)
             const user = await User.findOne({ where: { login } })
                 .then(user => {
                     if (!user) return;
