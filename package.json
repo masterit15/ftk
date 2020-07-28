@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.10.4",
+    "bcrypt": "^3.0.8",
     "body-parser": "^1.19.0",
     "config": "^3.3.1",
-    "connect-history-api-fallback": "^1.6.0",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -41,11 +41,10 @@
     "mysql2": "^2.1.0",
     "path": "^0.12.7",
     "redis": "^3.0.2",
+    "sequelize": "^5.22.3",
     "shortid": "^2.2.15",
     "socket.io": "^2.3.0",
     "web-push": "^3.4.4",
-    "sequelize": "^5.22.3",
-    "bcrypt": "^3.0.8",
     "xml-js": "^1.6.11"
   }
 }

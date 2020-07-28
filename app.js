@@ -28,19 +28,19 @@ app.use('/api/chat', require('./routes/chat.routes'))
 app.use('/api/upload', require('./routes/upload.routes'))
 app.use('/api/departament', require('./routes/departament.routes'))
 
-// if (process.env.NODE_ENV === 'production') {
-//     app.use('/', express.static(path.join(__dirname, 'web', 'dist')))
-//     app.get('*', (req, res) => {
-//         res.sendFile(path.resolve(__dirname, 'web', 'dist', 'index.html'))
-//     })
-// }
+if (process.env.NODE_ENV === 'production') {
+    app.use('/', express.static(path.join(__dirname, 'web', 'dist')))
+    // app.get('/admin', (req, res) => {
+    //     res.sendFile(path.resolve(__dirname, 'web', 'dist', 'index.html'))
+    // })
+}
 const PORT = process.env.PORT || config.get('port')
 const HostName = config.get('host') || 'localhost'
 
 async function start() {
     try {
         await db.authenticate();
-        server.listen(PORT, '0.0.0.0', () => console.log(`App has been started on port ${PORT}...`))
+        server.listen(PORT, HostName, () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);
