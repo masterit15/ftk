@@ -8,7 +8,6 @@ const path = require('path')
 const cors = require('cors')
 const { app, server } = require('./chat')
 
-
 app.use(express.json({ extended: true }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
