@@ -2,6 +2,7 @@ const express = require('express')
 const db = require('./db/db')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
 const config = require('config')
 const path = require('path')
 const cors = require('cors')
@@ -9,6 +10,9 @@ const { app, server } = require('./chat')
 
 
 app.use(express.json({ extended: true }))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cors())
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); // тут выставим домен с которым будет работать api
