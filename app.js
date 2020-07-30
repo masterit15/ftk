@@ -10,7 +10,7 @@ const { app, server } = require('./chat')
 
 app.use(express.json({ extended: true }))
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(cors())
 app.use(function (req, res, next) {
@@ -43,7 +43,7 @@ const HostName = config.get('host') || 'localhost'
 async function start() {
     try {
         await db.authenticate();
-        server.listen(PORT, '0.0.0.0', () => console.log(`App has been started on port ${PORT}...`))
+        server.listen(PORT, HostName, () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);

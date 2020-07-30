@@ -88,9 +88,10 @@ router.post(
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     error: errors.array(),
-                    message: 'Некорректные данные при входе в систему'
+                    message: 'Некорректные данные при входе в систему!!!!!!'
                 })
             }
+            //console.log(req.body)
             //const {email, password} = req.body
             const { login, password } = req.body
             const user = await User.findOne({ where: { login } })
@@ -112,7 +113,6 @@ router.post(
             // const refreshToken = jwt.sign(user.id, config.get('jwtRefreshSecret'))
             const refreshToken = generateRefreshToken(user.id)
             const Rtoken = await RefToken.create({ refreshToken })
-            console.log(user.subscription)
             res.json({
                 success: true,
                 accessToken,
@@ -149,7 +149,7 @@ router.post('/token', async (req, res) => {
             jwt.verify(rToken.dataValues.refreshToken, config.get('jwtRefreshSecret'), (err, user) => {
                 if (err) return res.sendStatus(403)
                 const accessToken = generateAccessToken(user)
-                res.json({
+                res.status(201).json({
                     success: true,
                     accessToken,
                     refreshToken,
