@@ -22,7 +22,8 @@ export default {
       listItems: [
         { title: "Главная", icon: "fa-home", href: "/" },
         { title: "Заявки", icon: "fa-file", href: "/claims" },
-        { title: "Пользователи", icon: "fa-users", href: "/users" }
+        { title: "Пользователи", icon: "fa-user", href: "/users" },
+        { title: "Управления", icon: "fa-users", href: "/departaments" }
       ]
     };
   },

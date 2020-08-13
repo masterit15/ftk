@@ -48,7 +48,6 @@
       list-style-type: none
 #timelines
 .timeline
-  margin-top: 120px
   padding: 0px 30px 0px 80px
   &_item 
     position: relative
@@ -166,13 +165,15 @@
   opacity: 0
 .editor
   margin: 0px 20px 20px 0px
-  position: fixed
+  position: relative
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14)
   border-radius: 10px
   background-color: #fff
   display: flex
   width: 100%
   max-width: 725px
+  height: 100%
+  min-height: 350px
   padding: 20px 
   z-index: 10
   &.fixed
@@ -216,7 +217,7 @@
 .purple
   background-color: $purple
 .green
-  background-color: $red
+  background-color: $green
 // file uploader
 .form_row__photo-previews
   width: 100%

@@ -45,6 +45,7 @@ export default {
     async logOuted() {
       let res = await this.logout(this.user.refreshToken);
       if (res) {
+        this.$socket.emit("userLeft", this.user)
         this.$router.push("/login");
       } else {
         this.$message("", "Возникла ошибка при выходе из системы", "warning");

@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const config = require('config')
 const path = require('path')
 const cors = require('cors')
-const { app, server } = require('./chat')
+const { app, server } = require('./soket')
 
 app.use(express.json({ extended: true }))
 app.use(bodyParser.json())

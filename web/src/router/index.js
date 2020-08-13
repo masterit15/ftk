@@ -49,6 +49,15 @@ const router =  new Router({
         layout: 'main',
         requiresAuth: true
       }
+    },
+    {
+      path: '/departaments',
+      name: 'Управления',
+      component: () => import('../views/Departaments.vue'),
+      meta: {
+        layout: 'main',
+        requiresAuth: true
+      }
     }
   ]
 })

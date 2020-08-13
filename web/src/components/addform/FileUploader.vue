@@ -28,7 +28,8 @@ import $ from "jquery";
 export default {
   name: "fileuploader",
   props: {
-    uploader: String
+    uploader: Number,
+    count: Number
   },
   data() {
     return {
@@ -43,8 +44,11 @@ export default {
       this.files = files;
       this.$emit("files", this.files);
     },
-    uploaderImg(uploader, reset = false, edit = false) {
+    uploaderImg(uploader, count=5, reset = false, edit = false) {
       let that = this;
+      if(that.count){
+        count = that.count
+      }
       $(`.uploader-${uploader}`).each(function() {
         let addButton = $(this).find(".add_photo-item");
         let addInput = $(this).find(".js-photo-upload");
@@ -61,16 +65,16 @@ export default {
         // Вычисление лимита
         function limitUpload() {
           if (filelist > 0 || edit) {
-            return 5 - filelist;
+            return count - filelist;
           } else if (filelist == 0 || !edit) {
-            return 5 - imagesList.children().length;
+            return count - imagesList.children().length;
           }
         }
         // Отображение лимита
         function limitDisplay() {
           let sTxt;
           switch (limitUpload()) {
-            case 5:
+            case count:
               sTxt =
                 '<span class="text">Прикрепить ' +
                 limitUpload() +

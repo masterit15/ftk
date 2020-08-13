@@ -1,4 +1,6 @@
 const { Router } = require('express')
+const jwt = require('jsonwebtoken')
+const config = require('config')
 const db = require('../db/db')
 const sequelize = require('sequelize')
 const Op = sequelize.Op
@@ -55,7 +57,7 @@ router.get('/export', auth, paginatedResults(Claim), async (req, res) => {
 /*
     метод отдачи обращений
 */
-router.get('/', paginatedResults(Claim), (req, res) => {
+router.get('/', auth, paginatedResults(Claim), (req, res) => {
     return res.json({
         success: true,
         claims: res.paginatedResults
@@ -297,7 +299,10 @@ function paginatedResults(model) {
         const startIndex = (page - 1) * limit
         const endIndex = page * limit
         const results = {}
-        var total = await getTotal(model, searchparam, search, status, sortIsmain, userId, dateintervalfrom, dateintervalto, dateinterval)
+        let total = await getTotal(model, searchparam, search, status, sortIsmain, userId, dateintervalfrom, dateintervalto, dateinterval)
+        const token = req.headers.authorization.split(' ')[1] // "Bearer TOKEN"
+        const thisUser = jwt.verify(token, config.get('jwtSecret'))
+        const departament = await Departament.findOne({where: {id:thisUser.departamentId}, raw: true})
         results.pagin = {
             currentPage: page,
             total: total.length,
@@ -434,14 +439,37 @@ function paginatedResults(model) {
             //         res.paginatedResults = results
             //     }
             // }
-            results.results = await model.findAll({
-                order: [
-                    ["id", 'DESC']
-                ],
-                offset: (startIndex),
-                limit: limit,
-            })
-            res.paginatedResults = results
+            if(thisUser.permission == 'Руководитель' && departament.name == 'АМС'){
+                results.results = await model.findAll({
+                    order: [
+                        ["id", 'DESC']
+                    ],
+                    offset: (startIndex),
+                    limit: limit,
+                })
+                res.paginatedResults = results
+            }else if(thisUser.permission == 'Руководитель'){
+                results.results = await model.findAll({
+                    where: { departamentid: departament.id },
+                    order: [
+                        ["id", 'DESC']
+                    ],
+                    offset: (startIndex),
+                    limit: limit,
+                })
+                res.paginatedResults = results
+            }else if(thisUser.permission == 'Сотрудник'){
+                results.results = await model.findAll({
+                    where: { departamentid: departament.id, userId: thisUser.userId },
+                    order: [
+                        ["id", 'DESC']
+                    ],
+                    offset: (startIndex),
+                    limit: limit,
+                })
+                res.paginatedResults = results
+            }
+
             next()
         } catch (e) {
             res.status(500).json({ message: e.message })

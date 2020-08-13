@@ -37,8 +37,8 @@ export default {
       this.$emit("address", this.addresssearch);
     }
   },
-  created() {
-    this.initializeYandexMap();
+  async created() {
+    await this.initializeYandexMap();
     navigator.geolocation.getCurrentPosition(position => {
       let lat = position.coords.latitude;
       let lng = position.coords.longitude;

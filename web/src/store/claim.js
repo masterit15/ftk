@@ -12,6 +12,9 @@ export default({
   actions: {
     async addClaims({dispatch}, data = {}){
       let res = await axios.post('/api/claims/', data)
+      if(res.data.success){
+        this.$socket.emit("newClaimNotified", res.data)
+      }
       dispatch('getClaims')
       return res.data
     },

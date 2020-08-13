@@ -6,26 +6,7 @@
           <div :class="'editor_icon show-'+!commentEditor">
             <i class="fa fa-comment"></i>
           </div>
-          <input
-            placeholder="Добавить комментарий"
-            :class="'add_comment show-'+!commentEditor"
-            @click="commentEditor = !commentEditor, editorClick()"
-          />
-          <transition name="fade">
-            <div :class="'show-'+commentEditor">
-              <vue-editor
-                placeholder="Текст комментария"
-                v-model="timelineContent"
-                :editor-toolbar="customToolbar"
-              />
-              <FileUploader uploader="3" v-on:files="getFiles"/>
-              <button @click="addEvents" class="btn btn-outline-success">Добавить</button>
-              <button
-                @click="commentEditor = !commentEditor, timelineContent = '', editorClick()"
-                class="btn btn-outline-warning"
-              >Отмена</button>
-            </div>
-          </transition>
+            <Editor placeholder="Добавить комментарий" v-on:content="addEvents" :text="event.text" :uploader="3"/>
         </div>
         <div class="timelines" ref="timelines">
           <transition-group name="comment" tag="ul" class="timeline">
@@ -44,8 +25,8 @@
                 </div>
                   <div class="droupdown" ref="option">
                     <div class="droupdown_overlay" @click="droupdownClose"></div>
-                    <b-dropdown-item @click="deleteEvents(item.id, claim)"><i class="fa fa-trash"></i> Удалить</b-dropdown-item>
-                    <b-dropdown-item @click="editEvents(item.id, claim)"><i class="fa fa-pencil"></i> Редактировать</b-dropdown-item>
+                    <b-dropdown-item @click="deleteEvents(item.id, claim), droupdownClose"><i class="fa fa-trash"></i> Удалить</b-dropdown-item>
+                    <b-dropdown-item @click="editEvents(item)"><i class="fa fa-pencil"></i> Редактировать</b-dropdown-item>
                   </div>
                 <h4 class="timeline_autor">{{item.autor}}</h4>
                 <div class="timeline_time">{{item.time | date('datetime')}}</div>
@@ -53,7 +34,8 @@
                 <div class="timeline_file" v-if="item.file">
                   <div class="files" v-for="(file, i) in item.file" :key="i">
                     <a :href="file" v-if="fileType(file) == 'fa-file-image-o'">
-                      <div class="img" :style="{backgroundImage: `url(${file})`}"/>
+                      <!-- <div class="img" :style="{backgroundImage: `url(${file})`}"/> -->
+                      <b-img thumbnail fluid :src="file" alt="Image 1"></b-img>
                     </a>
                     <a v-else class="files" :href="file" download>
                       {{fileType(file)}}
@@ -71,7 +53,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import FileUploader from "./FileUploader";
+import Editor from "./Editor";
 
 export default {
   name: "timelines",
@@ -85,29 +67,26 @@ export default {
         maxScrollbarLength: 60
       },
       events: [],
+      
       files: [],
       commentEditor: false,
-      timelineContent: "",
-      customToolbar: [
-        // [{ header: [false, 1, 2, 3, 4, 5, 6] }],
-        ["bold", "italic", "underline"], // toggled buttons
-        [
-          { align: "" },
-          { align: "center" },
-          { align: "right" }
-          // { align: "justify" }
-        ],
-        ["blockquote"],
-        [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-        [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-        // [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-        ["link", "image", "video"],
-        ["clean"] // remove formatting button
-      ]
+      
     };
   },
   computed: {
     ...mapGetters(["user", "timelines"]),
+    event(){
+      return {
+        id: null,
+        event: "comment",
+        autor: this.user.username,
+        text: '',
+        file: null,
+        claimId: this.claim,
+        userId: this.user.userId,
+        time: new Date()
+      }
+    },
     timeline() {
       if (this.claim) {
         this.events = this.timelines;
@@ -117,18 +96,18 @@ export default {
       }
     }
   },
-  mounted() {
-    let commentContent = this.$refs.scroll;
-    let commentEditor = this.$refs.editor;
-    commentContent.addEventListener("scroll", function() {
-      if (this.scrollTop > 0) {
-        commentEditor.style.width = `${this.clientWidth - 30}px`;
-        commentEditor.classList.add("fixed");
-      } else {
-        commentEditor.classList.remove("fixed");
-      }
-    });
-  },
+  // mounted() {
+  //   let commentContent = this.$refs.scroll;
+  //   let commentEditor = this.$refs.editor;
+  //   commentContent.addEventListener("scroll", function() {
+  //     if (this.scrollTop > 0) {
+  //       commentEditor.style.width = `${this.clientWidth - 30}px`;
+  //       commentEditor.classList.add("fixed");
+  //     } else {
+  //       commentEditor.classList.remove("fixed");
+  //     }
+  //   });
+  // },
   methods: {
     ...mapActions(['getTimeline', 'addTimeline', 'putTimeline', 'deleteTimeline', 'uploadFiles']),
     editorClick() {
@@ -140,27 +119,22 @@ export default {
         commentTimeline.style.marginTop = `${120}px`;
       }
     },
-    async addEvents() {
-      let event = {
-        event: "comment",
-        autor: this.user.username,
-        text: this.timelineContent,
-        file: null,
-        claimId: this.claim,
-        userId: this.user.userId,
-        time: new Date()
-      };
-      event.file = await this.uploadFiles(this.files)
-      // this.events.push(event);
-      this.addTimeline(event)
+    async addEvents(content) {
+      this.event.text = content.text
+      this.event.file = await this.uploadFiles(content.files)
+      if(this.event.id){
+        this.putTimeline(this.event)
+      }else{
+        this.addTimeline(this.event)
+      }
+    },
+    editEvents(event){
+      this.event = event
+      this.commentEditor = !this.commentEditor
     },
     deleteEvents(id, claimId){
       this.deleteTimeline({id, claimId})
     },
-    editEvents(id, claimId){
-
-    },
-
     eventIcon(event) {
       let icon = "";
       switch (event) {
@@ -182,7 +156,6 @@ export default {
       return icon;
     },
     getFiles(files){
-      console.log(files)
       this.files.push(files)
     },
     eventColor(event) {
@@ -292,7 +265,7 @@ export default {
     }
   },
   components: {
-    FileUploader
+    Editor
   }
 };
 </script>

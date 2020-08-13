@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 const { check, validationResult } = require('express-validator')
 const User = require('../models/User')
 const Departament = require('../models/Departament')
-const auth = require('../middleware/auth.middleware')
 const RefToken = require('../models/refreshToken')
 const router = Router()
 
@@ -79,7 +78,6 @@ router.post(
 router.post(
     '/login',
     [
-        // check('email', 'Введите корректный email').normalizeEmail().isEmail(),
         check('password', 'Введите пароль').exists()
     ],
     async (req, res) => {
@@ -91,8 +89,6 @@ router.post(
                     message: 'Некорректные данные при входе в систему!!!!!!'
                 })
             }
-            //console.log(req.body)
-            //const {email, password} = req.body
             const { login, password } = req.body
             const user = await User.findOne({ where: { login } })
                 .then(user => {
@@ -109,19 +105,19 @@ router.post(
             if (!isMatch) {
                 return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
             }
-            const accessToken = generateAccessToken(user.id)
-            // const refreshToken = jwt.sign(user.id, config.get('jwtRefreshSecret'))
-            const refreshToken = generateRefreshToken(user.id)
+            const accessToken = generateAccessToken(user)
+            const refreshToken = generateRefreshToken(user)
             const Rtoken = await RefToken.create({ refreshToken })
-            res.json({
+            res.status(200).json({
                 success: true,
                 accessToken,
                 refreshToken,
+                expires_in: Date.now(),
                 login,
                 userId: user.id,
                 username: user.username,
-                subscription: user.subscription
-                //avatar: user.avatar
+                subscription: user.subscription,
+                avatar: user.avatar
             })
 
         } catch (e) {
@@ -132,32 +128,28 @@ router.post(
 
 router.post('/token', async (req, res) => {
     const refreshToken = req.body.token
-    if (refreshToken == null) return res.sendStatus(401)
-    const decoded = jwt.verify(refreshToken, config.get('jwtRefreshSecret'), async (err, user) => {
-        if (err.message === 'jwt expired'){
-            await RefToken.destroy({
-                where: { refreshToken }
-            })
-        return res.status(401).json({ message: 'Нет авторизации или закончилась сессия' })
+    if (refreshToken == null) return res.sendStatus(403)
+    const decoded = jwt.verify(refreshToken, config.get('jwtRefreshSecret'), (err, user) => {
+        if (err && err.message === 'jwt expired'){
+            return err.message
+        }else{
+            return user
         }
     })
-    if (!decoded) {
-        return res.status(401).json({ message: 'Нет авторизации или закончилась сессия' })
-    }
-    await RefToken.findOne({ where: { refreshToken } })
-        .then(rToken => {
-            jwt.verify(rToken.dataValues.refreshToken, config.get('jwtRefreshSecret'), (err, user) => {
-                if (err) return res.sendStatus(403)
-                const accessToken = generateAccessToken(user)
-                res.status(201).json({
-                    success: true,
-                    accessToken,
-                    refreshToken,
-                })
-            })
-        }).catch(err => { 
-            return res.status(403)
+    if (decoded === 'jwt expired') {
+        return res.status(403).json({ success: false, message: 'Нет авторизации или закончилась сессия' })
+    }else{
+        const accessToken = generateAccessToken(decoded)
+        const newrefreshToken = generateRefreshToken(decoded)
+        res.status(201).json({
+            success: true,
+            accessToken,
+            refreshToken: newrefreshToken,
+            expires_in: Date.now()
         })
+        await RefToken.create({ refreshToken: newrefreshToken })
+        await RefToken.destroy({where: { refreshToken }})
+    }
 })
 
 router.delete('/logout', async (req, res) => {
@@ -171,9 +163,9 @@ router.delete('/logout', async (req, res) => {
     })
 })
 function generateAccessToken(user) {
-    return jwt.sign({ userId: user }, config.get('jwtSecret'), { expiresIn: '15m' })
+    return jwt.sign({ userId: user.id, permission: user.permission, departamentId: user.departamentId }, config.get('jwtSecret'), { expiresIn: '15m' })
 }
 function generateRefreshToken(user) {
-    return jwt.sign({ userId: user }, config.get('jwtRefreshSecret'), { expiresIn: '20m' })
+    return jwt.sign({ userId: user.id, permission: user.permission, departamentId: user.departamentId }, config.get('jwtRefreshSecret'), { expiresIn: '30m' })
 }
 module.exports = router

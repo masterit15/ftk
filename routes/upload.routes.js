@@ -2,6 +2,8 @@ const {Router} = require('express')
 const User = require('../models/User')
 const Claim = require('../models/Claim')
 const Timeline = require('../models/Timeline')
+const fs = require('fs');
+const resizeOptimizeImages = require('../components/resizeimg');
 const multer  = require("multer")
 const router = Router()
  
@@ -16,7 +18,7 @@ const storageConfig = multer.diskStorage({
 });
 const upload = multer({ storage: storageConfig })
 
-router.post("/", upload.array("files", 5), (req, res, next) => {
+router.post("/", upload.array("files", 5), async (req, res, next) => {
     let filedata = req.files; 
     if(!filedata){
         res.status(404).json({
@@ -25,6 +27,19 @@ router.post("/", upload.array("files", 5), (req, res, next) => {
           err: filedata
       });
     }else{
+      // fs.readdir('./uploads', async (err, files) => {
+      //   let options = {
+      //     images: [],
+      //     width: 800,
+      //     height: 600,
+      //     quality: 90
+      //   };
+      //   files.forEach(file => {
+      //     options.images.push('./uploads/'+file)
+      //   })
+      //   let resFiles = await resizeOptimizeImages(options);
+      //   console.log(resFiles)
+      // });
       res.status(201).json({
         success: true,
         message: 'Файл загружен',

@@ -10,7 +10,7 @@
             <b-form @submit.prevent="onSubmit">
               <b-form-group>
                 <label>Статус заявки:</label>
-                <b-form-select class="mb-md-3" v-model="status" :options="selectStatus"></b-form-select>
+                <b-form-select class="mb-md-3" @change="changeStatus(claim.status)" v-model="claim.status" :options="selectStatus"></b-form-select>
                 <b-row>
                   <b-col sm="6">
                     <label>Дата создания:</label>
@@ -82,7 +82,7 @@
                     <div :style="{backgroundImage: `url(${file})`}"></div>
                   </li>
                 </ul>
-                <FileUploader uploader="1" v-on:files="getFiles"/>
+                <FileUploader :uploader="1" v-on:files="getFiles"/>
                 <div id="answer" v-if="formData">
                 <label>Ответ к заявке:</label>
                 <vue-editor
@@ -91,7 +91,7 @@
                   :editor-toolbar="customToolbar"
                 />
                 <label>Файлы ответ к заявке:</label>
-                <FileUploader uploader="2" v-on:files="getAnswerFiles"/>
+                <FileUploader :uploader="2" v-on:files="getAnswerFiles"/>
                 </div>
               </b-form-group>
               <b-button @click="add" variant="success">Сохранить</b-button>
@@ -172,11 +172,10 @@ export default {
       ],
       showform: true,
       selectStatus: [
-        { value: "New", text: "Не обработанные" },
-        { value: "Worked", text: "В работе" },
-        { value: "Done", text: "Обработанные" }
+        { value: "Не обработанные", text: "Не обработанные" },
+        { value: "В работе", text: "В работе" },
+        { value: "Обработанные", text: "Обработанные" }
       ],
-      status: "New",
       files: [],
       answerFiles: []
     };
@@ -192,7 +191,7 @@ export default {
     claim() {
       let control = new Date(this.condate).getFullYear() + "-" + new Date(this.condate).getMonth() + "-" + new Date(this.condate).getDate()
       let claim = {
-        status: this.status,
+        status: "Не обработанные",
         address: '',
         userId: this.user.userId,
         filesPath: {},
@@ -224,6 +223,7 @@ export default {
       'addClaims',
       'putClaims', 
       'uploadFiles',
+      'addTimeline',
       'getTimeline'
       ]),
     getResponsoble(data) {
@@ -264,6 +264,24 @@ export default {
       this.claim.answerFiles = await this.uploaderFiles(this.answerFiles)
       let res = await this.putClaims(this.claim)
       console.log(res)
+      this.overlay = false;
+    },
+    async changeStatus(status){
+      this.overlay = true;
+      this.claim.status = status
+      let res = await this.putClaims(this.claim)
+      if(res.success){
+        let event = {
+          event: "changestatus",
+          autor: this.user.username,
+          text: `Изменен статус на "${status}"`,
+          file: null,
+          claimId: this.claim.id,
+          userId: this.user.userId,
+          time: new Date()
+        }
+        this.addTimeline(event)
+      }
       this.overlay = false;
     }
   },

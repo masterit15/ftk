@@ -22,36 +22,30 @@ export default {
     AppSidebar,
     AppFooter
   },
+  sockets: {
+    connect: function () {
+            console.log('socket connected')
+        },
+  },
   created() {
-    // запрос-перехватчик
-    axios.interceptors.request.use(
-      function(response) {
-        //console.log("Сделать что-то перед отправкой запроса", response);
-        return response;
-      },
-      function(error) {
-        //console.log("Сделать что-то с ошибкой запроса ", error);
-        return Promise.reject(error);
-      }
-    );
-    // ответ перехватчик
+    this.$socket.emit("userJoined", this.user)
     axios.interceptors.response.use(async response =>{
-        if (response.data.token === false) {
-          let res = await this.refreshToken()
-          if(!res){
-            await this.logout()
-            router.push('/login')
-          }
-        }
         return response;
       }, async (error) =>{
-        if(error.response.status === 401) {
-        //  alert("Ваша сессия закончилась, пройдите повторную авторизацию");
+      let timeDiff = Math.abs(new Date().getTime() - this.user.expires_in);
+      let diffTime = Math.round(((timeDiff % 86400000) % 3600000) / 60000);//Math.round(timeDiff / 1000); 
+        if (error.response.status === 401 && diffTime >= 1) {
+          let res = await this.refreshToken()
+        }else if (!error.response.data.success){
             await this.logout()
-            this.$router.push('/login')
+            this.$socket.emit("userLeft", this.user)
+            router.push('/login')
+        }else{
+            await this.logout()
+            this.$socket.emit("userLeft", this.user)
+            router.push('/login')
         }
-        //console.log("Делать что-то с ответными данными ошибки", error.response.status);
-        //return Promise.reject(error);
+        return Promise.reject(error);
       }
     );
   },

@@ -15,8 +15,8 @@ const User = db.define("user", {
     },
     email: { type: sequelize.STRING, allowNull: true},
     login: { type: sequelize.STRING, allowNull: false},
-    // avatar: { type: Sequelize.TEXT, allowNull: false},
-    // permission: {type: Sequelize.ENUM, values:['Администратор','Сотрудник'], defaultValue: 'Сотрудник'},
+    avatar: { type: sequelize.STRING, allowNull: false},
+    permission: {type: sequelize.ENUM, values:['Руководитель','Сотрудник'], defaultValue: 'Сотрудник'},
     username: { type: sequelize.STRING, allowNull: false},
     password: { type: sequelize.STRING, allowNull: false},
     subscription: { type: sequelize.JSON, allowNull: true}

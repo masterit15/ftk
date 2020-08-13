@@ -152,7 +152,7 @@ export default {
       departamentItem: [
         "Управление образования",
         "Финансовое управление",
-        "Google"
+        "Google"  
       ]
     };
   },
@@ -314,7 +314,7 @@ input, button
 .cont.s-signup .img:before
   -webkit-transform: translate3d(500px, 0, 0)
   transform: translate3d(500px, 0, 0)
-
+  z-index: -1
 .img-text
   z-index: 2
   position: absolute

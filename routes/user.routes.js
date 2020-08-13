@@ -12,7 +12,7 @@ const router = Router()
     метод регистрации
 */
 router.post(
-  '/add',
+  '/',
   [
     check('email', 'Некорректный email').isEmail(),
     check('password', 'Минимальная длина пароля 8 символов').isLength({ options: { min: 8 } })
@@ -26,7 +26,7 @@ router.post(
           message: 'Некорректные данные при регистрации'
         })
       }
-      const { login, email, username, password, permission, departament } = req.body
+      const { login, email, username, avatar, password, permission, departament } = req.body
       const hashedPassword = await bcrypt.hash(password, 12)
       const candidate = await User.findOne({ where: { login } })
       const dep = await Departament.findOne({ where: { name: departament } })
@@ -48,7 +48,7 @@ router.post(
         login,
         email,
         username,
-        avatar: '',
+        avatar,
         permission: permission ? permission : 'Сотрудник',
         password: hashedPassword,
         departamentId: depID
@@ -108,7 +108,7 @@ router.get('/:id', auth, async (req, res) => {
 /*
     метод обновления пользователя по ID
 */
-router.put('/edit', auth, async (req, res) => {
+router.put('/', auth, async (req, res) => {
   const { login, email, username, avatar, permission, password } = req.body
   let id = req.body.id
   // если пароль не менялся

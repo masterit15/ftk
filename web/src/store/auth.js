@@ -29,9 +29,10 @@ export default({
       let res = await axios.post('/api/auth/token', { token: user.refreshToken})
       user.accessToken = res.data.accessToken
       user.refreshToken = res.data.refreshToken
+      user.expires_in = res.data.expires_in
       axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
       localStorage.setItem('user', JSON.stringify(user))
-      return res.data.success
+      return res.data
     },
     async logout({}){
       let user = await JSON.parse(localStorage.getItem('user'))

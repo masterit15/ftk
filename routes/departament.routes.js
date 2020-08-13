@@ -98,6 +98,7 @@ function paginatedResults(model) {
               order:[
                   ["id"]
               ],
+              include: User,
               offset:(startIndex),
               limit : limit,
           })
