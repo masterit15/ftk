@@ -1,5 +1,7 @@
 const { Router } = require('express')
 const sequelize = require('sequelize')
+const jwt = require('jsonwebtoken')
+const config = require('config')
 const Op = sequelize.Op
 const bcrypt = require('bcrypt')
 const { check, validationResult } = require('express-validator')
@@ -221,6 +223,8 @@ function paginatedResults(model) {
     const endIndex = page * limit
     const results = {}
     const total = await model.findAll({ raw: true })
+    const token = req.headers.authorization.split(' ')[1] // "Bearer TOKEN"
+    const thisUser = jwt.verify(token, config.get('jwtSecret'))
     results.pagin = {
       currentPage: page,
       total: total.length,
@@ -241,14 +245,6 @@ function paginatedResults(model) {
       /*
           условие поиска обращений
       */
-      // results.results = await model.findAll({
-      //   order: [
-      //     ["id"]
-      //   ],
-      //   offset: (startIndex),
-      //   limit: limit,
-      // })
-      // res.paginatedResults = results
       if (search !== '' && search !== undefined) {
         results.results = await model.findAll({
           where: { username: { [Op.like]: '%' + search + '%' } },
@@ -258,15 +254,26 @@ function paginatedResults(model) {
           offset: (startIndex),
           limit: limit,
           raw: true
+        })
+        res.paginatedResults = results
+      }else if(thisUser.permission == 'root'){
+        results.results = await model.findAll({
+          order:[
+              ["id"]
+          ],
+          offset:(startIndex),
+          limit : limit,
+          // attributes: {exclude: ['password', 'email']}
       })
       res.paginatedResults = results
-      } else {
+    }else if(thisUser.permission == 'Руководитель'){
           results.results = await model.findAll({
               order:[
                   ["id"]
               ],
               offset:(startIndex),
               limit : limit,
+              attributes: {exclude: ['password', 'email', 'subscription']}
           })
           res.paginatedResults = results
       }
