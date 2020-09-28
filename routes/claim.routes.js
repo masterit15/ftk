@@ -85,6 +85,7 @@ router.post('/', auth, async (req, res, next) => {
         responsible,
         answerDescription,
     } = req.body
+    console.log(req.body)
     Claim.create({
         status,
         timeline,
