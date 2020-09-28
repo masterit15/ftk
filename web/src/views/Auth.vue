@@ -164,8 +164,11 @@ export default {
     },
     async authLogin(){
       let res = await this.authorization(this.authData)
-      if(res){
+      if(res.success){
+        this.$socket.emit("userJoined", res)
         this.$router.push('/') 
+      }else{
+        this.$message(res.message, 'Ошибка авторизации', 'danger')
       }
     },
     async authRegister() {

@@ -1,7 +1,7 @@
 <template>
-  <div id="addform" v-if="showform">
+  <div id="addform">
     <b-overlay :show="overlay" rounded="sm">
-      <div class="close_btn" @click="showform = !showform">
+      <div class="close_btn" @click="closeForm(false)">
         <i class="fa fa-times-circle"></i>
       </div>
       <b-row>
@@ -69,7 +69,7 @@
                 <pre>{{claim}}</pre>
                 <DepartamentSearch v-model="claim.departament"  v-on:departament="getDepartament"/>
                 <ResponsibleSearch v-model="claim.responsible" v-on:respons="getResponsoble" />
-                <AddressSearch v-model="claim.address" v-on:address="getAddress" />
+                <AddressSearch v-model="claim.address" v-on:address="getAddress" :saveaddress="claim.address"/>
                 <label>Текст заявки:</label>
                 <vue-editor
                   class="mb-md-3"
@@ -170,7 +170,6 @@ export default {
         ["link", "image", "video"],
         ["clean"] // remove formatting button
       ],
-      showform: true,
       selectStatus: [
         { value: "Не обработанные", text: "Не обработанные" },
         { value: "В работе", text: "В работе" },
@@ -179,12 +178,6 @@ export default {
       files: [],
       answerFiles: []
     };
-  },
-  watch: {
-    showform() {
-      let body = document.querySelector("body");
-      body.style.position = "relative";
-    }
   },
   computed: {
     ...mapGetters(["user"]),
@@ -226,6 +219,9 @@ export default {
       'addTimeline',
       'getTimeline'
       ]),
+    closeForm(param){
+      this.$emit('form', param)
+    },
     getResponsoble(data) {
       this.claim.responsibleId = data.id;
       this.claim.responsible = data.name;
@@ -256,6 +252,9 @@ export default {
       this.claim.answerFiles = await this.uploaderFiles(this.answerFiles)
       let res = await this.addClaims(this.claim)
       console.log(res)
+      if(res.success){
+        this.$socket.emit("newClaimNotified", res.claims)
+      }
       this.overlay = false;
     },
     async put(){
@@ -285,7 +284,10 @@ export default {
       this.overlay = false;
     }
   },
-  beforeDestroy() {}
+  beforeDestroy() {
+    let body = document.querySelector("body");
+    body.style.position = "relative";
+  }
 };
 </script>
 

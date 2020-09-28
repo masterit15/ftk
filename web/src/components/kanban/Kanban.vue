@@ -15,7 +15,7 @@
         <div class="drag-options"></div>
         <div v-bar>
           <div>
-            <ul class="drag-inner-list" ref="list" :data-status="stage">
+            <ul class="drag-inner-list" ref="list" :data-status="stage" @scroll="getMore($event, stage)">
               <li
                 class="drag-item"
                 v-for="block in getBlocks(stage)"
@@ -80,6 +80,14 @@ export default {
     }
   },
   methods: {
+    getMore(event, staus){
+      let scrolltop = event.target.scrollTop
+      let scrollheight = event.target.scrollHeight
+      let height = event.target.offsetHeight
+      if(height >= scrollheight - scrolltop){
+        this.$emit('loadfn', staus)
+      }
+    },
     getBlocks(status) {
       return this.localBlocks.filter(block => block.status === status);
     },

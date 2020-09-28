@@ -25,7 +25,7 @@ app.use('/api/subscribe', require('./routes/webpush.routes'))
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/claims', require('./routes/claim.routes'))
 app.use('/api/tml', require('./routes/timeline.routes'))
-//app.use('/api/status', require('./routes/status.routes'))
+app.use('/api/notifycation', require('./routes/notifycation.routes'))
 app.use('/api/users', require('./routes/user.routes'))
 app.use('/api/chat', require('./routes/chat.routes'))
 app.use('/api/upload', require('./routes/upload.routes'))
@@ -38,12 +38,12 @@ if (process.env.NODE_ENV === 'production') {
     // })
 }
 const PORT = process.env.PORT || config.get('port')
-const HostName = config.get('host') || 'localhost'
+const HostName = config.get('host') || 'localhost' //'0.0.0.0'
 
 async function start() {
     try {
         await db.authenticate();
-        server.listen(PORT, '0.0.0.0', () => console.log(`App has been started on port ${PORT}...`))
+        server.listen(PORT, HostName, () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);

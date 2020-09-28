@@ -6,6 +6,8 @@ body
 button
   &:hover, &:focus
     outline: none
+#headers, #sidebar
+  box-shadow: $shadow
 .hamburger
   width: 32px
   height: 32px
@@ -43,7 +45,9 @@ button
   margin-bottom: 50px
   .container
     max-width: 1450px
+@import 'header'
 @import 'sidebar'
 @import 'addform'
 @import 'scrollbar'
 @import 'kanban'
+@import 'transition'

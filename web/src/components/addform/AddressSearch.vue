@@ -20,7 +20,7 @@ import ymaps from "ymaps";
 export default {
   name: "addresssearch",
   props: {
-    address: String
+    saveaddress: String
   },
   data() {
     return {
@@ -33,11 +33,16 @@ export default {
   },
   watch: {
     addresssearch(val) {
-      val && val !== this.address && this.querySelections(val);
+      val && val !== this.saveaddress && this.querySelections(val);
       this.$emit("address", this.addresssearch);
     }
   },
-  async created() {
+  async mounted() {
+    if(this.saveaddress){
+      console.log('true', this.saveaddress)
+      this.addresssearch = this.address
+    }else{
+      console.log('false', this.saveaddress)
     await this.initializeYandexMap();
     navigator.geolocation.getCurrentPosition(position => {
       let lat = position.coords.latitude;
@@ -56,8 +61,6 @@ export default {
           console.log(err);
         });
     });
-    if(this.address){
-      this.addresssearch = this.address
     }
   },
   methods: {

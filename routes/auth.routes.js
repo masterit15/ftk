@@ -85,6 +85,7 @@ router.post(
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 return res.status(400).json({
+                    success: false,
                     error: errors.array(),
                     message: 'Некорректные данные при входе в систему!!!!!!'
                 })
@@ -98,12 +99,18 @@ router.post(
                 .catch(err => console.log(err));
 
             if (!user) {
-                return res.status(400)
+                return res.status(400).json({ 
+                    success: false,
+                    message: 'Такого пользователя не существует в системе, попробуйте снова' 
+                })
             }
             const isMatch = await bcrypt.compare(password, user.password)
 
             if (!isMatch) {
-                return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
+                return res.status(400).json({ 
+                    success: false,
+                    message: 'Неверный пароль, попробуйте снова' 
+                })
             }
             const accessToken = generateAccessToken(user)
             const refreshToken = generateRefreshToken(user)

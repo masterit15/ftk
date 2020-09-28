@@ -24,11 +24,10 @@ export default {
   },
   sockets: {
     connect: function () {
-            console.log('socket connected')
-        },
+      console.log('socket connected')
+    },
   },
   created() {
-    this.$socket.emit("userJoined", this.user)
     axios.interceptors.response.use(async response =>{
         return response;
       }, async (error) =>{

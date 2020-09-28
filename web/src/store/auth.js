@@ -11,14 +11,20 @@ export default({
   },
   actions: {
     async authorization({commit, dispatch}, data){
-      let res = await axios.post('/api/auth/login', data)
-      localStorage.setItem('user', JSON.stringify(res.data))
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
-      if (!res.data.subscription){
-        dispatch('subscribeUser')
-      }
-      commit('set_user', res.data)
-      return res.data.success
+      let result = await axios.post('/api/auth/login', data)
+      .then(res => {
+        localStorage.setItem('user', JSON.stringify(res.data))
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
+        if (!res.data.subscription){
+          dispatch('subscribeUser')
+        }
+        commit('set_user', res.data)
+        return res.data
+      })
+      .catch(error => {
+        return error.response.data
+      })
+      return result
     },
     async register({}, data){
       let res = await axios.post('/api/auth/register', data)

@@ -27,10 +27,21 @@ export default {
       ]
     };
   },
+  mounted() {
+    if(localStorage.getItem('sidebar')){
+      document.querySelector("body").classList.add("sidebar")
+      this.$refs.sidebar.classList.add("open");
+    }
+  },
   methods: {
     sidebarTrigger() {
       document.querySelector("body").classList.toggle("sidebar");
       this.$refs.sidebar.classList.toggle("open");
+      if(this.$refs.sidebar.classList.contains("open")){
+        localStorage.setItem('sidebar', true)
+      }else{
+        localStorage.removeItem('sidebar')
+      }
     }
   }
 };

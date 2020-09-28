@@ -6,6 +6,7 @@ import user from './user'
 import timeline from './timeline'
 import upload from './upload'
 import departament from './departament'
+import notifycation from './notifycation'
 
 
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     upload,
     departament,
     timeline,
+    notifycation,
     user
   }
 })

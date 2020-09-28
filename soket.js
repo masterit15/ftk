@@ -2,34 +2,39 @@ const app = require('express')()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 const User = require('./models/User')
+const Notifycation = require('./models/Notifycation')
 const webpush = require('./webpush')
 
 io.on('connection', socket => {
   // срабатывает при входе
   socket.on('userJoined', async data => {
-    await User.update({
-      online: 'Y'
-    }, {
-      where: { id: data.userId }
-    })
-    // const payload = JSON.stringify({ title: 'Поступила новая заявка!', body: 'testtesttets!' });
-    // const user = await User.findOne({where: { id: data.userId }, raw: true})
-    // webpush.sendNotification(user.subscription, payload).catch(error => {
-    //   console.error(error.stack);
-    // });
+    let user = await User.findOne({ where: { id: data.userId } }); 
+    user.online = "Y";
+    await user.save();
   })
   // срабатывает при выходе
   socket.on('userLeft', async data => {
-    await User.update({
-      online: 'N'
-    }, {
-      where: { id: data.userId }
-    })
+    let user = await User.findOne({ where: { id: data.userId } }); 
+    user.online = "N";
+    await user.save();
   })
-
   // срабатывает при входе
   socket.on('newClaimNotified', async data => {
-    console.log(data)
+    // console.log(data)
+    Notifycation.create({
+      title: 'Поступила новая заявка!',
+      text: '',
+      date: new Date(),
+      event: 'claim',
+      recipients: data.departamentId,
+      read: [data.userId],
+    }).then(notify => {
+      console.log('notify', notify.dataValues)
+      socket.broadcast
+        .to(data.departamentId)
+        .emit('notifications', `Данные с сервера ${data}`)
+    }).catch(err=>console.log(err))
+    
     const payload = JSON.stringify({ title: 'Поступила новая заявка!', body: 'testtesttets!' });
     const user = await User.findOne({where: { id: data.userId }, raw: true})
     webpush.sendNotification(user.subscription, payload).catch(error => {

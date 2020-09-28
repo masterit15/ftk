@@ -1,7 +1,6 @@
 <template>
   <div id="users">
     <b-container>
-    <!-- <pre>{{users}}</pre> -->
     <b-card-group deck>
     <b-card v-for="(user, i) in users" :key="i" :title="user.username"
     tag="article"
@@ -22,6 +21,7 @@
       </template>
     </b-card>
   </b-card-group>
+  <pre>{{users}}</pre>
   </b-container>
   </div>
 </template>

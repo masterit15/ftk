@@ -441,6 +441,7 @@ function paginatedResults(model) {
             // }
             if(thisUser.permission == 'Руководитель' && departament.name == 'АМС'){
                 results.results = await model.findAll({
+                    where: {status},
                     order: [
                         ["id", 'DESC']
                     ],
@@ -450,7 +451,7 @@ function paginatedResults(model) {
                 res.paginatedResults = results
             }else if(thisUser.permission == 'Руководитель'){
                 results.results = await model.findAll({
-                    where: { departamentid: departament.id },
+                    where: { departamentid: departament.id, status },
                     order: [
                         ["id", 'DESC']
                     ],
@@ -461,6 +462,16 @@ function paginatedResults(model) {
             }else if(thisUser.permission == 'Сотрудник'){
                 results.results = await model.findAll({
                     where: { departamentid: departament.id, userId: thisUser.userId },
+                    order: [
+                        ["id", 'DESC']
+                    ],
+                    offset: (startIndex),
+                    limit: limit,
+                })
+                res.paginatedResults = results
+            }else if(thisUser.permission == 'root'){
+                results.results = await model.findAll({
+                    where: {status},
                     order: [
                         ["id", 'DESC']
                     ],

@@ -113,9 +113,7 @@ router.get('/:id', auth, async (req, res) => {
 router.put('/', auth, async (req, res) => {
   const { login, email, username, avatar, permission, password } = req.body
   let id = req.body.id
-  // если пароль не менялся
-  if (password !== '') {
-    const hashedPassword = await bcrypt.hash(password, 12)
+  const hashedPassword = await bcrypt.hash(password, 12)
     password = hashedPassword
     User.update({
       login,
@@ -140,54 +138,6 @@ router.put('/', auth, async (req, res) => {
           err: err
         });
       })
-  }
-  // если аватар не менялся
-  if (avatar !== '') {
-    const hashedPassword = await bcrypt.hash(password, 12)
-    password = hashedPassword
-    User.update({
-      login,
-      username,
-      avatar,
-      permission,
-      password
-    }, {
-      where: { id }
-    }).then(users => {
-      return res.json({
-        success: true,
-        message: 'Пользователь обновлен',
-        users
-      });
-    })
-      .catch((err) => {
-        return res.json({
-          success: false,
-          message: 'Не удается обновить пользователя',
-          err: err
-        });
-      })
-  }
-  User.update({
-    login,
-    username,
-    permission,
-  }, {
-    where: { id }
-  }).then(users => {
-    return res.json({
-      success: true,
-      message: 'Пользователь обновлен',
-      users
-    });
-  })
-    .catch((err) => {
-      return res.json({
-        success: false,
-        message: 'Не удается обновить пользователя',
-        err: err
-      });
-    })
 })
 /*
     метод удаления пользователя по ID

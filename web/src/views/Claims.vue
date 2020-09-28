@@ -1,11 +1,9 @@
 <template>
   <div id="claims">
-    <kanban :stages="status" :blocks="blocks" @update-block="updateStatus" :color="colors">
+    <pre>{{blocks}}</pre>
+    <kanban :stages="status" :blocks="blocks" @update-block="updateStatus" :color="colors" v-on:loadfn="getMore">
       <div v-for="stage in status" :slot="stage" :key="stage">
         <h2>{{ stage }}</h2>
-        <!-- <div class="add_btn" @click.prevent="() => addBlock(stage)">
-            <i class="fa fa-plus"></i>
-        </div>-->
       </div>
       <div
         class="drag-item-content"
@@ -26,14 +24,15 @@
         <div class="drag-item-description">{{block.description}}</div>
       </div>
       <div v-for="stage in status" :key="stage" :slot="`footer-${stage}`">
-        <div class="loadmore_btn">
-          <i class="fa fa-spinner"></i>
-          <span>Загрузить еще?</span>
+        <div class="moreloader">
+          <div class="text-center">
+            <b-spinner variant="primary" label="Spinning"></b-spinner>
+          </div>
         </div>
       </div>
     </kanban>
-    <transition name="slide-addform">
-      <add-form v-if="formtrigger" :formData="editClaim" />
+    <transition name="v-transition-animate">
+      <add-form v-if="form" :formData="editClaim" v-on:form="openForm"/>
     </transition>
   </div>
 </template>
@@ -45,13 +44,14 @@ export default {
   name: "claims",
   data() {
     return {
-      formtrigger: false,
+      form: false,
       status: ["Не обработанные", "В работе", "Обработанные"],
       colors: ["#f79696", "#ffc107", "#17b8a1"],
       editClaim: {},
+      blocks: [],
       filterParam: {
         page: 1,
-        limit: 6,
+        limit: 4,
         search: "",
         searchparam: "",
         status: true,
@@ -66,13 +66,31 @@ export default {
     this.loadClaims();
   },
   computed: {
-    ...mapGetters(['user', 'blocks'])
+    ...mapGetters(['user', 'claims']),
   },
   methods: {
     ...mapActions(['getDepartaments', 'getClaims', 'putClaims']),
     async loadClaims() {
       this.filterParam.userId = this.user.userId;
+      for(let i in this.status){
+        this.filterParam.status = this.status[i]
+        await this.getClaims(this.filterParam)
+        if(this.claims.length > 0){
+          this.blocks.push(...this.claims)
+        }
+      }
+    },
+    async getMore(status){
+      let loader = event.path[3].querySelector('.moreloader')
+      loader.classList.add('active')
+      this.filterParam.status = status
+      this.filterParam.page++
       await this.getClaims(this.filterParam);
+      if(this.claims.length > 0){
+          this.blocks.push(...this.claims)  
+      }else{
+        loader.classList.remove('active')
+      }
     },
     updateStatus(id, status) {
       this.blocks.find(b => b.id === Number(id)).status = status;
@@ -84,25 +102,24 @@ export default {
     },
     openEditForm(claim) {
       this.editClaim = claim;
-      if (this.formtrigger) {
-        this.formtrigger = false;
+      if (this.form) {
+        this.form = false;
       }
       setTimeout(() => {
-        this.formtrigger = !this.formtrigger;
+        this.form = !this.form;
       }, 0);
     },
-    // addBlock(stage) {
-    //   let column = document.querySelector(`[data-status='${stage}']`);
-    //   let id = this.blocks.length + 1;
-    //   this.blocks.push({
-    //     id: id,
-    //     status: stage,
-    //     title: `test-${id}`
-    //   });
-    //   // setTimeout(() => {
-    //   //   column.scrollTop = column.scrollHeight
-    //   // }, 0);
-    // }
+    // openEditForm() {
+    //   if (this.form) {
+    //     this.form = false;
+    //   }
+    //   setTimeout(() => {
+    //     this.form = !this.form;
+    //   }, 0);
+    // },
+    openForm(param){
+      this.form = param
+    }
   },
   components: {
     AddForm
@@ -110,5 +127,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="sass">
+.moreloader
+  display: none
+  &.active
+    display: block
 </style>
