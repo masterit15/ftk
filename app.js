@@ -42,6 +42,7 @@ const HostName = config.get('host') || 'localhost' //'0.0.0.0'
 
 async function start() {
     try {
+      
         await db.authenticate();
         server.listen(PORT, '0.0.0.0', () => console.log(`App has been started on port ${PORT}...`))
         console.log('Connection has been established successfully.');
