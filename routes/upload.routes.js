@@ -20,6 +20,7 @@ const upload = multer({ storage: storageConfig })
 
 router.post("/", upload.array("files", 5), async (req, res, next) => {
     let filedata = req.files; 
+    console.log(filedata)
     if(!filedata){
         res.status(404).json({
           success: false,
