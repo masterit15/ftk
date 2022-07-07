@@ -38,7 +38,7 @@
     "jimp": "^0.16.0",
     "jsonwebtoken": "^8.5.1",
     "material-components-web": "^4.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "multer": "^1.4.2",
     "mysql2": "^2.1.0",
     "path": "^0.12.7",
