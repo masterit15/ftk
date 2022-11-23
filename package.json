@@ -46,7 +46,7 @@
     "resize-optimize-images": "^1.1.1",
     "sequelize": "^5.22.3",
     "shortid": "^2.2.15",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "web-push": "^3.4.4",
     "xml-js": "^1.6.11"
   }
